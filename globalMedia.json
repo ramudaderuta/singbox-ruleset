@@ -21,7 +21,8 @@
                 "tv.apple.com"
             ],
             "domain_keyword":[
-                "ttvnw"
+                "ttvnw",
+                "twitch"
             ],
             "ip_cidr": [
                 "103.53.48.0/23",
