@@ -18,7 +18,11 @@ jobs:
             sudo dpkg -i sing-box.deb
         - name: generate singbox config
           run: |
-            mkdir srs
+            if [ ! -d "srs" ]; then
+              mkdir srs
+            else
+              echo 已存在srs目录
+            fi
             for file in *.json; do
               filename=$(basename "$file" .json)
               sing-box rule-set compile "$file" -o "srs/$filename.srs"
