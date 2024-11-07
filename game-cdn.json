@@ -17,7 +17,12 @@
                 "tlu.dl.delivery.mp.microsoft.com",
                 "trts.baishancdnx.cn",
                 "uplaypc-s-ubisoft.cdn.ubionline.com.cn",
-                "xz.pphimalayanrt.com"
+                "xz.pphimalayanrt.com",
+                "blizzard.nefficient.co.k",
+                "blzddist1-a.akamaihd.net",
+                "blzddistkr1-a.akamaihd.n",
+                "bnetproduct-a.akamaihd.n",
+                "cdn.blz-contentstack.com"
             ],
             "domain_suffix":[
                 "pdl.wow.battlenet.com.cn",
@@ -41,7 +46,10 @@
                 "rockstargames.com",
                 "rsg.sc",
                 "videos-rockstargames-com.akamaized.net",
-                "steamserver.net"
+                "steamserver.net",
+                "battle.net",
+                "battlenet.com.cn",
+                "blizzard.com"
             ],
             "domain_keyword":[
                 "egdownload"
