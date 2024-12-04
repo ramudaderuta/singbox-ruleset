@@ -1,0 +1,45 @@
+{
+    "version": 2,
+    "rules": [
+        {
+            "domain_suffix": [
+                "skype.com",
+                "momoe.0t0.jp",
+                "rose.jnx.mitsubishi-motors.co.jp",
+                "edi.niandc.ne.jp",
+                "jnx.honda.co.jp",
+                "rose.exnet.mitsubishi-motors.com",
+                "dx2.jnx.mitsubishi-motors.co.jp",
+                "dx2.exnet.mitsubishi-motors.com",
+                "diswlogin.siemens.com",
+                "lync-ext-web.eds.panasonic.com",
+                "app.box.com",
+                "panasonicava.cloud.teamcenter.com",
+                "pxai.is.jp.panasonic.com",
+                "auth1c.is.jp.panasonic.com",
+                "siemens.com",
+                "aws.amazon.com",
+                "cloud.teamcenter.com",
+                "extlyweb01.palet.jp.panasonic.com",
+                "extlyweb02.palet.jp.panasonic.com",
+                "ut1-gec.is.jp.panasonic.com",
+                "extlywebconf.palet.jp.panasonic.com",
+                "auth1.is.jp.panasonic.com",
+                "tableau4.is.jp.panasonic.com",
+                "ut1-auth1c.is.jp.panasonic.com",
+                "extlywac02.palet.jp.panasonic.com",
+                "extlywac01.palet.jp.panasonic.com",
+                "ut1-dcollabo.is.jp.panasonic.com",
+                "panasonicava-uat.cloud.teamcenter.com",
+                "www.mei.co.jp",
+                "amazonaws.com",
+                "conf.eds.panasonic.com",
+                "secufex.erlm.siemens.de",
+                "it1-auth1.is.jp.panasonic.com",
+                "ut1-auth1.is.jp.panasonic.com",
+                "sts.eds.panasonic.com",
+                "tableau2.is.jp.panasonic.com"
+            ]
+        }
+    ]
+}
