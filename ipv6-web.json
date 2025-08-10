@@ -3,7 +3,6 @@
     "rules": [
         {
             "domain": [
-                "adguardteam.github.io",
                 "adrules.top",
                 "anime-rule34-world.b-cdn.net",
                 "api.groq.com",
@@ -25,7 +24,6 @@
                 "i.jeded.com",
                 "lazer.ppy.sh",
                 "metacubexd.pages.dev",
-                "metacubex.github.io",
                 "na.b.g-tun.com",
                 "notify.ppy.sh",
                 "origin-a.akamaihd.ne",
