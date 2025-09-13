@@ -70,6 +70,6 @@ jobs:
       - name: Commit and push if changed
         if: steps.fetch.outputs.changed == '1'
         run: |
-          git add remote_json || true
+          git add remote || true
           git commit -m "Update remote JSON files from DustinWin/ruleset_geodata"
           git push
