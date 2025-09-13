@@ -12,12 +12,7 @@ jobs:
   generatesrs:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo (use the triggering commit when available)
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-          fetch-depth: 0
-          persist-credentials: true
+      - uses: actions/checkout@v4
 
       - name: setup singbox
         env:
@@ -31,36 +26,36 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: generate singbox config (root json files)
+      - name: generate singbox config (recursively)
         run: |
-          if [ ! -d "srs" ]; then
-            mkdir srs
-          else
-            echo 已存在 srs 目录
-          fi
+          mkdir -p srs
           shopt -s nullglob
-          for file in *.json; do
-            filename=$(basename "$file" .json)
-            sing-box rule-set compile "$file" -o "srs/$filename.srs"
+          # 查找仓库中所有 json（排除 .git、srs、dat 目录），保留相对路径，并在 srs/ 下复刻目录结构
+          find . -type f -name '*.json' ! -path "./.git/*" ! -path "./srs/*" ! -path "./dat/*" -print0 \
+          | while IFS= read -r -d '' file; do
+            rel="${file#./}"
+            outdir="$(dirname "srs/$rel")"
+            mkdir -p "$outdir"
+            filename="$(basename "$rel" .json)"
+            echo "Compiling $rel -> $outdir/$filename.srs"
+            # 尝试编译；失败也继续（你可以根据需要改为 exit 1）
+            if ! sing-box rule-set compile "$file" -o "$outdir/$filename.srs"; then
+              echo "WARN: sing-box compile failed for $file"
+            fi
           done
 
-      - name: generate singbox & dat files for remote
+      - name: generate dat files (recursively)
         run: |
-          # create remote output dirs
-          if [ ! -d "remote" ]; then
-            echo "remote 目录不存在，跳过 remote 处理"
-          fi
-          mkdir -p remote/srs remote/dat
-
+          mkdir -p dat
           shopt -s nullglob
-          for file in remote/*.json *.json; do
-            [ -f "$file" ] || continue
-            filename=$(basename "$file" .json)
-
-            # 生成 srs 放到 remote/srs
-            sing-box rule-set compile "$file" -o "remote/srs/$filename.srs" || echo "sing-box compile failed for $file"
-
-            # jq 提取并规范化前导点：去掉前缀后的 leading dots
+          # 同样递归遍历所有 json，并在 dat/ 下复刻目录结构
+          find . -type f -name '*.json' ! -path "./.git/*" ! -path "./srs/*" ! -path "./dat/*" -print0 \
+          | while IFS= read -r -d '' file; do
+            rel="${file#./}"
+            outdir="$(dirname "dat/$rel")"
+            mkdir -p "$outdir"
+            outfile="dat/${rel%.json}.dat"
+            echo "Generating $outfile from $rel"
             jq -r '
               .rules[]? |
               ( .domain[]? | "full:" + . ),
@@ -71,27 +66,20 @@ jobs:
             ' "$file" \
             | sed -E 's/^([^:]+):\.+(.*)/\1:\2/' \
             | sed "/^$/d" \
-            | sort -u > "remote/dat/$filename.dat" || true
-
-            # 同时保留到根 dat/ 目录
-            mkdir -p dat
-            cp -f "remote/dat/$filename.dat" "dat/$filename.dat" || true
-
-            echo "生成 remote/srs/$filename.srs 和 remote/dat/$filename.dat"
+            | sort -u > "$outfile" || true
           done
 
-      - name: Commit and push generated files (including remote)
+      - name: Commit and push *.srs and *.dat
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
-
-          # stage the generated outputs (root srs/dat and remote ones)
-          git add srs dat remote/srs remote/dat || true
-
+          git add srs dat || true
+          # 如果没有 staged 变更就退出
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
           else
-            git commit -m "Generate srs and dat files (including remote outputs)"
+            git commit -m "Generate srs and dat files"
+            echo "commit message: Generate srs and dat files"
             git push
           fi
