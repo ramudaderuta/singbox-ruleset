@@ -12,7 +12,12 @@ jobs:
   generatesrs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo (use the triggering commit when available)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: setup singbox
         env:
@@ -26,12 +31,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: generate singbox config
+      - name: generate singbox config (root json files)
         run: |
           if [ ! -d "srs" ]; then
             mkdir srs
           else
-            echo 已存在srs目录
+            echo 已存在 srs 目录
           fi
           shopt -s nullglob
           for file in *.json; do
@@ -39,17 +44,23 @@ jobs:
             sing-box rule-set compile "$file" -o "srs/$filename.srs"
           done
 
-      - name: generate dat files
+      - name: generate singbox & dat files for remote
         run: |
-          if [ ! -d "dat" ]; then
-            mkdir dat
-          else
-            echo 已存在dat目录
+          # create remote output dirs
+          if [ ! -d "remote" ]; then
+            echo "remote 目录不存在，跳过 remote 处理"
           fi
+          mkdir -p remote/srs remote/dat
+
           shopt -s nullglob
-          for file in *.json; do
+          for file in remote/*.json *.json; do
+            [ -f "$file" ] || continue
             filename=$(basename "$file" .json)
-            # jq 生成原始行；后面用 sed 去掉所有字段冒号后面的 leading dots（例如 full:.cn -> full:cn, keyword:.abc -> keyword:abc）
+
+            # 生成 srs 放到 remote/srs
+            sing-box rule-set compile "$file" -o "remote/srs/$filename.srs" || echo "sing-box compile failed for $file"
+
+            # jq 提取并规范化前导点：去掉前缀后的 leading dots
             jq -r '
               .rules[]? |
               ( .domain[]? | "full:" + . ),
@@ -60,20 +71,27 @@ jobs:
             ' "$file" \
             | sed -E 's/^([^:]+):\.+(.*)/\1:\2/' \
             | sed "/^$/d" \
-            | sort -u > "dat/$filename.dat" || true
-            echo "生成 dat/$filename.dat"
+            | sort -u > "remote/dat/$filename.dat" || true
+
+            # 同时保留到根 dat/ 目录
+            mkdir -p dat
+            cp -f "remote/dat/$filename.dat" "dat/$filename.dat" || true
+
+            echo "生成 remote/srs/$filename.srs 和 remote/dat/$filename.dat"
           done
 
-      - name: Commit and push *.srs and *.dat
+      - name: Commit and push generated files (including remote)
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
-          git add srs dat
+
+          # stage the generated outputs (root srs/dat and remote ones)
+          git add srs dat remote/srs remote/dat || true
+
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
           else
-            git commit -m "Generate srs and dat files"
-            echo "commit message: Generate srs and dat files"
+            git commit -m "Generate srs and dat files (including remote outputs)"
             git push
           fi
