@@ -1,0 +1,85 @@
+name: fetch-remote-json
+
+# 允许写入仓库 contents（用于 push）
+permissions:
+  contents: write
+
+on:
+  # 定时：每天 12:00 America/Los_Angeles -> 对应 UTC 19:00（夏时制）
+  schedule:
+    - cron: '0 19 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  fetch-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          # 需要可以推回仓库，保持凭证
+          persist-credentials: true
+          fetch-depth: 1
+
+      - name: Set up git user
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+
+      - name: Download specified json files from remote repo
+        env:
+          REMOTE_OWNER: DustinWin
+          REMOTE_REPO: ruleset_geodata
+          REMOTE_BRANCH: sing-box-ruleset
+          OUT_DIR: remote_json
+        run: |
+          set -eu
+          mkdir -p "$OUT_DIR"
+          # 在这里列出你要拉取的文件（可以按需增删）
+          files=("cn.json" "proxy.json")
+
+          base_url="https://raw.githubusercontent.com/${REMOTE_OWNER}/${REMOTE_REPO}/${REMOTE_BRANCH}"
+          changed=0
+
+          for f in "${files[@]}"; do
+            url="${base_url}/${f}"
+            dest="${OUT_DIR}/${f}"
+            tmp="${dest}.tmp"
+
+            echo "Downloading $url -> $tmp"
+            if curl -fsSL "$url" -o "$tmp"; then
+              # 如果目标文件存在且内容相同，则删除临时文件；否则替换并标记变更
+              if [ -f "$dest" ]; then
+                if cmp -s "$dest" "$tmp"; then
+                  echo "No change for $f"
+                  rm -f "$tmp"
+                else
+                  mv "$tmp" "$dest"
+                  echo "Updated $dest"
+                  changed=1
+                fi
+              else
+                mv "$tmp" "$dest"
+                echo "Created $dest"
+                changed=1
+              fi
+            else
+              echo "Warning: failed to download $url (skipping)"
+              rm -f "$tmp" || true
+            fi
+          done
+
+          echo "::set-output name=changed::$changed" || true
+
+      - name: Commit and push if changed
+        run: |
+          # add the directory and commit only if there are staged changes
+          git add remote_json || true
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          else
+            git commit -m "Update remote JSON files from DustinWin/ruleset_geodata"
+            git push
+          fi
