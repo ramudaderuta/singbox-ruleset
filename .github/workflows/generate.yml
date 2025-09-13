@@ -6,40 +6,71 @@ on:
   workflow_dispatch: 
 
 jobs:
-    generatesrs:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v4
-        - name: setup singbox
-          env:
-            SINGBOX_DEB_URL: "https://github.com/SagerNet/sing-box/releases/download/v1.12.0/sing-box_1.12.0_linux_amd64.deb"
-          run: |
-            wget -O sing-box.deb $SINGBOX_DEB_URL
-            sudo dpkg -i sing-box.deb
-        - name: generate singbox config
-          run: |
-            if [ ! -d "srs" ]; then
-              mkdir srs
-            else
-              echo 已存在srs目录
-            fi
-            for file in *.json; do
-              filename=$(basename "$file" .json)
-              sing-box rule-set compile "$file" -o "srs/$filename.srs"
-            done
-        - name: Commit and push *.srs
-          run: |
-            git config --global user.email "action@github.com"
-            git config --global user.name "GitHub Action"
-            git add srs
-            if git diff --staged --quiet; then
-              echo "No changes to commit"
-              exit 0
-            else
-              git commit -m "Generate srs files"
-              echo "commit message: Generate srs files"
-              git push 
-            fi
+  generatesrs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: setup singbox
+        env:
+          SINGBOX_DEB_URL: "https://github.com/SagerNet/sing-box/releases/download/v1.12.5/sing-box_1.12.5_linux_amd64.deb"
+        run: |
+          wget -O sing-box.deb $SINGBOX_DEB_URL
+          sudo dpkg -i sing-box.deb
 
+      - name: install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
 
+      - name: generate singbox config
+        run: |
+          if [ ! -d "srs" ]; then
+            mkdir srs
+          else
+            echo 已存在srs目录
+          fi
+          shopt -s nullglob
+          for file in *.json; do
+            filename=$(basename "$file" .json)
+            sing-box rule-set compile "$file" -o "srs/$filename.srs"
+          done
+
+      - name: generate dat files
+        run: |
+          if [ ! -d "dat" ]; then
+            mkdir dat
+          else
+            echo 已存在dat目录
+          fi
+          shopt -s nullglob
+          for file in *.json; do
+            filename=$(basename "$file" .json)
+            # jq 生成原始行；后面用 sed 去掉所有字段冒号后面的 leading dots（例如 full:.cn -> full:cn, keyword:.abc -> keyword:abc）
+            jq -r '
+              .rules[]? |
+              ( .domain[]? | "full:" + . ),
+              ( .domain_suffix[]? | "domain:" + . ),
+              ( .domain_keyword[]? | "keyword:" + . ),
+              ( .domain_regex[]? | "regexp:" + . ),
+              ( .ip_cidr[]? )
+            ' "$file" \
+            | sed -E 's/^([^:]+):\.+(.*)/\1:\2/' \
+            | sed "/^$/d" \
+            | sort -u > "dat/$filename.dat" || true
+            echo "生成 dat/$filename.dat"
+          done
+
+      - name: Commit and push *.srs and *.dat
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add srs dat
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          else
+            git commit -m "Generate srs and dat files"
+            echo "commit message: Generate srs and dat files"
+            git push
+          fi
