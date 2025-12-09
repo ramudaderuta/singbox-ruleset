@@ -1829,7 +1829,6 @@ domain:api.ai
 domain:api.mixpanel.com
 domain:api.nebula-emby.com
 domain:api.news
-domain:api.palworldgame.com
 domain:apiary.io
 domain:apibay.org
 domain:apigee.com
@@ -12564,6 +12563,7 @@ domain:imageab.com
 domain:imagebam.com
 domain:imagecurl.com
 domain:imagecurl.org
+domain:imagedelivery.net
 domain:imagefap.com
 domain:imageflea.com
 domain:imageglass.org
@@ -12571,7 +12571,6 @@ domain:imagemodeler.com
 domain:imagepost.com
 domain:images-amazon.com
 domain:images-gaytube.com
-domain:images.prismic.io
 domain:imageshack.com
 domain:imageshack.us
 domain:imagetwist.com
@@ -14783,7 +14782,6 @@ domain:lsnzxzy1.com
 domain:lspimg.com
 domain:lss55.com
 domain:lsxszzg.com
-domain:lt.sntp.uk
 domain:lthgav.buzz
 domain:ltn.com.tw
 domain:ltsports.com.tw
@@ -14843,7 +14841,6 @@ domain:lzjscript.com
 domain:lzmtnews.org
 domain:m-power.com
 domain:m-sport.co.uk
-domain:m-team.cc
 domain:m.me
 domain:m12.vc
 domain:m2m.com
@@ -18252,6 +18249,7 @@ domain:pali.ltd
 domain:paljorpublications.com
 domain:palmislife.com
 domain:paltalk.com
+domain:palworldgame.com
 domain:panasonic
 domain:panasonic.com
 domain:panasonic.jp
@@ -19485,6 +19483,7 @@ domain:printfriendly.com
 domain:printspots.com
 domain:printspots.net
 domain:prism-break.org
+domain:prismic.io
 domain:prismlauncher.org
 domain:prismlive.com
 domain:prisoneralert.com
@@ -19745,6 +19744,7 @@ domain:qmp4.com
 domain:qmttqg3k.me
 domain:qmzdd.com
 domain:qnap.com
+domain:qobuz.com
 domain:qombol.com
 domain:qoo10.jp
 domain:qooqlevideo.com
@@ -19864,6 +19864,7 @@ domain:r18.com
 domain:r18av.com
 domain:r18lu-avi.shop
 domain:r18lu.com
+domain:r2.dev
 domain:r34porn.net
 domain:ra.gg
 domain:rabbitscams.com
@@ -21523,6 +21524,7 @@ domain:snow.me
 domain:snowcorp.com
 domain:snowlionpub.com
 domain:snowmiku.com
+domain:sntp.uk
 domain:so-net.ne.jp
 domain:so-net.net.tw
 domain:soasta-dswb.com
@@ -27189,7 +27191,6 @@ full:crl.versign.net
 full:databank.worldbank.org
 full:datarouter.apps.netherrealm.com
 full:default.exp-tas.com
-full:deribit.cdn.prismic.io
 full:deutschewelle.h-cdn.com
 full:dl.begellhouse.com
 full:elib.maruzen.co.jp
