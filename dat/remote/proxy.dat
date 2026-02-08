@@ -5859,6 +5859,8 @@ domain:codeforces.com
 domain:codei.sh
 domain:codeish.co
 domain:codeish.io
+domain:codeium.com
+domain:codeiumdata.com
 domain:codeplex.com
 domain:coderabbit.ai
 domain:codeshare.io
@@ -14407,9 +14409,7 @@ domain:lanmdh.net
 domain:lanniser-ylo.shop
 domain:lantern.io
 domain:lanternal.com
-domain:lanterncn.cn
 domain:lantosfoundation.org
-domain:laod.cn
 domain:laogai.org
 domain:laogairesearch.org
 domain:laomiu.com
@@ -14491,7 +14491,6 @@ domain:lecloud.net
 domain:lecoin.cc
 domain:lede-project.org
 domain:ledger.com
-domain:leeao.com.cn
 domain:leecountytimes.com
 domain:leetcode.com
 domain:lefora.com
@@ -25650,6 +25649,7 @@ domain:wikipedia.com
 domain:wikipedia.org
 domain:wikiporn.tv
 domain:wikiquote.org
+domain:wikis.tw
 domain:wikisexguide.com
 domain:wikisource.org
 domain:wikiunblocked.org
@@ -25686,6 +25686,8 @@ domain:windowssearch.com
 domain:windowsuem.com
 domain:windowsupdate.com
 domain:windscribe.com
+domain:windsurf.build
+domain:windsurf.com
 domain:windy.com
 domain:wingamestore.com
 domain:wingy.site
@@ -27497,6 +27499,7 @@ full:vsmarketplacebadge.apphb.com
 full:wetv.qq.com
 full:widgets.stripst.com
 full:wrds-www.wharton.upenn.edu
+full:yandex-pogoda.static-storage.net
 full:yangzhi.app
 full:ztedevices.com
 keyword:1drv
