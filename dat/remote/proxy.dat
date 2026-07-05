@@ -1882,6 +1882,7 @@ domain:apple-pay.rs
 domain:apple-pay.wang
 domain:apple-store.net
 domain:apple-store.wang
+domain:apple-studies.com
 domain:apple-usa.net
 domain:apple-watch.com.ru
 domain:apple.ae
@@ -2383,6 +2384,7 @@ domain:atlasonepoint.com
 domain:atlassian-dev.net
 domain:atlassian.com
 domain:atlassian.net
+domain:atmeta.com
 domain:atnext.com
 domain:atokara.jp
 domain:atom.io
@@ -2761,6 +2763,7 @@ domain:aziani.com
 domain:azirevpn.com
 domain:aznude.com
 domain:azure
+domain:azure-api.net
 domain:azure-devices-int.net
 domain:azure-devices.net
 domain:azure-dns.com
@@ -2798,6 +2801,7 @@ domain:azureplanetscale.net
 domain:azureserviceprofiler.com
 domain:azuresmartspaces.net
 domain:azurestackvalidation.com
+domain:azurestaticapps.net
 domain:azurewebsites.net
 domain:b-cdn.net
 domain:b-eroland.net
@@ -26085,7 +26089,6 @@ full:hpstore.corpmerchandise.com
 full:hub.slarker.me
 full:i.jeded.com
 full:imperial.insendi.com
-full:ingest.apple-studies.com
 full:licdn.cn.cdn20.com
 full:link.theplatform.com
 full:live-patreon-marketing.pantheonsite.io
