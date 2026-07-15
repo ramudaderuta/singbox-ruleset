@@ -2791,6 +2791,7 @@ domain:azuredns-prd.info
 domain:azuredns-prd.org
 domain:azureedge-test.net
 domain:azureedge.net
+domain:azureedge.us
 domain:azurefd.net
 domain:azureiotcentral.com
 domain:azureiotsolutions.com
@@ -4279,6 +4280,7 @@ domain:bnext.com.tw
 domain:bnn.co
 domain:bnrmetal.com
 domain:bntrace.com
+domain:bnxz.net
 domain:boardreader.com
 domain:boboporn.com
 domain:boboporn.net
@@ -4722,6 +4724,7 @@ domain:bynet.co.il
 domain:bypasscensorship.org
 domain:byrut.org
 domain:byspotify.com
+domain:bystys.tech
 domain:bytedapm.com
 domain:byteoversea.com
 domain:bytick.com
@@ -5819,6 +5822,7 @@ domain:coomer.su
 domain:coova.com
 domain:coova.net
 domain:coova.org
+domain:copilot-stg.com
 domain:copilot.com
 domain:copro.pw
 domain:copy-manga.com
@@ -13852,7 +13856,14 @@ domain:lightyearvpn.com
 domain:lih.kg
 domain:lihkg.com
 domain:lihksnap.com
+domain:like-video.com
 domain:like.com
+domain:like.video
+domain:likee.com
+domain:likee.video
+domain:likeeapp.ru
+domain:likeevideo.com
+domain:likeevideo.ru
 domain:likeseiyu.com
 domain:liketruyen.net
 domain:liketwice.com
@@ -14800,6 +14811,7 @@ domain:mgstage.com
 domain:mh4u.org
 domain:mhcb.ru
 domain:mhcbr.ru
+domain:mhgui.com
 domain:mhhanman.xyz
 domain:mhqwe.xyz
 domain:mhradio.org
@@ -17352,6 +17364,7 @@ domain:ovpn.com
 domain:ow.ly
 domain:owl.li
 domain:owltail.com
+domain:owxd.xyz
 domain:oxfordaasc.com
 domain:oxfordartonline.com
 domain:oxfordbibliographies.com
@@ -21099,6 +21112,7 @@ domain:starfieldtech.com
 domain:starfox.com
 domain:stargazer-games.com
 domain:stark-verlag.ch
+domain:starlink.com
 domain:starott.com
 domain:starp2p.com
 domain:starplus.com
@@ -22959,6 +22973,7 @@ domain:uwants.com
 domain:uweb.ru
 domain:uwpcommunitytoolkit.com
 domain:uxthemes.com
+domain:uxzw.club
 domain:uyghur-j.org
 domain:uyghuraa.org
 domain:uyghuramerican.org
@@ -25824,6 +25839,7 @@ domain:yt.be
 domain:ytimg.com
 domain:ytn.co.kr
 domain:yuanming.net
+domain:yucf.top
 domain:yuenuge113.xyz
 domain:yuenuge18.cc
 domain:yugioh-card.com
@@ -26082,6 +26098,7 @@ domain:zzycdz.com
 full:1password.drift.click
 full:a4e8s8k3.map2.ssl.hwcdn.net
 full:adobeereg.com
+full:agb9r0ad.qllfkl.com
 full:angle.com.tw
 full:api-p.videomarket.jp
 full:bbs.boingboing.net
@@ -26107,6 +26124,7 @@ full:firstsearch.oclc.org
 full:github-api.arkoselabs.com
 full:gitlab-assets.oss-cn-hongkong.aliyuncs.com
 full:gog-cdn-lumen.secure2.footprint.net
+full:hb4bbbbb.pmhcjk.com
 full:holoxx.f5.si
 full:hpstore.corpmerchandise.com
 full:hub.slarker.me
@@ -26117,6 +26135,7 @@ full:link.theplatform.com
 full:live-patreon-marketing.pantheonsite.io
 full:medone-education.thieme.com
 full:muse.jhu.edu
+full:nbbb1bb7.pmhcjk.com
 full:ntp-c.colorado.edu
 full:ntp.time.nl
 full:ntp0.ntp-servers.net
@@ -26133,6 +26152,7 @@ full:ntppool1.time.nl
 full:ntppool2.time.nl
 full:ood.opsource.net
 full:public-us-pingsx.api.clonoth.com
+full:q676790b.pmhcjk.com
 full:rink.hockeyapp.net
 full:roovza-launches.appsflyersdk.com
 full:roovza.inapps.appsflyersdk.com
@@ -26157,7 +26177,6 @@ full:rsshub2.asailor.org
 full:sberpro.vedomosti.ru
 full:straitsx-826709081262441084-b790f87a2ae6fd417434295.freshchat.com
 full:supercell.helpshift.com
-full:tesla-cdn.thron.com
 full:ubisoft.siteintercept.qualtrics.com
 full:ut1-time.colorado.edu
 full:utcnist.colorado.edu
