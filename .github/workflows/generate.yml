@@ -8,6 +8,9 @@ on:
     workflows: ["fetch-remote-json"]
     types: [completed]
 
+permissions:
+  contents: write
+
 jobs:
   generatesrs:
     runs-on: ubuntu-latest
@@ -16,10 +19,11 @@ jobs:
 
       - name: setup singbox
         env:
-          SINGBOX_DEB_URL: "https://github.com/SagerNet/sing-box/releases/download/v1.12.5/sing-box_1.12.5_linux_amd64.deb"
+          SINGBOX_VERSION: "1.14.0-beta.13"
         run: |
-          wget -O sing-box.deb $SINGBOX_DEB_URL
+          wget -O sing-box.deb "https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/sing-box_${SINGBOX_VERSION}_linux_amd64.deb"
           sudo dpkg -i sing-box.deb
+          sing-box version
 
       - name: install jq
         run: |
@@ -28,21 +32,17 @@ jobs:
 
       - name: generate singbox config (recursively)
         run: |
+          set -euo pipefail
           mkdir -p srs
-          shopt -s nullglob
           # 查找仓库中所有 json（排除 .git、srs、dat 目录），保留相对路径，并在 srs/ 下复刻目录结构
-          find . -type f -name '*.json' ! -path "./.git/*" ! -path "./srs/*" ! -path "./dat/*" -print0 \
-          | while IFS= read -r -d '' file; do
+          while IFS= read -r -d '' file; do
             rel="${file#./}"
             outdir="$(dirname "srs/$rel")"
             mkdir -p "$outdir"
             filename="$(basename "$rel" .json)"
             echo "Compiling $rel -> $outdir/$filename.srs"
-            # 尝试编译；失败也继续（你可以根据需要改为 exit 1）
-            if ! sing-box rule-set compile "$file" -o "$outdir/$filename.srs"; then
-              echo "WARN: sing-box compile failed for $file"
-            fi
-          done
+            sing-box rule-set compile "$file" -o "$outdir/$filename.srs"
+          done < <(find . -type f -name '*.json' ! -path "./.git/*" ! -path "./srs/*" ! -path "./dat/*" -print0)
 
       - name: generate dat files (recursively)
         run: |
