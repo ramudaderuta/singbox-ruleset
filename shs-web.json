@@ -1,0 +1,28 @@
+{
+    "version": 5,
+    "rules": [
+        {
+            "domain_suffix": [
+                "skype.com",
+                "momoe.0t0.jp",
+                "rose.jnx.mitsubishi-motors.co.jp",
+                "edi.niandc.ne.jp",
+                "jnx.honda.co.jp",
+                "rose.exnet.mitsubishi-motors.com",
+                "dx2.jnx.mitsubishi-motors.co.jp",
+                "dx2.exnet.mitsubishi-motors.com",
+                "diswlogin.siemens.com",
+                "eds.panasonic.com",
+                "app.box.com",
+                "panasonicava.cloud.teamcenter.com",
+                "jp.panasonic.com",
+                "siemens.com",
+                "aws.amazon.com",
+                "cloud.teamcenter.com",
+                "panasonicava-uat.cloud.teamcenter.com",
+                "amazonaws.com",
+                "secufex.erlm.siemens.de"
+            ]
+        }
+    ]
+}
