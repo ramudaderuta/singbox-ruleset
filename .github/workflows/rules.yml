@@ -60,7 +60,7 @@ jobs:
           python3 scripts/update_rules.py "${args[@]}" --compiler "$RUNNER_TEMP/rules-bin/hiddify-rules-compile"
       - name: Publish source snapshots and artifacts together
         run: |
-          git add -- rules/upstream rules/generated srs dat
+          git add -- rules/upstream srs dat
           if git diff --cached --quiet; then
             echo "Rules are already up to date."
             exit 0

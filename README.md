@@ -9,8 +9,6 @@ plain-text DAT exports. Use the files under `srs/` for sing-box subscriptions.
 | --- | --- |
 | [`rules/local/`](rules/local/) | Hand-maintained rules, such as the Steam and Epic download CDNs in `game-cdn.json`. |
 | [`rules/upstream/`](rules/upstream/) | Snapshots fetched from upstream; do not edit them by hand. |
-| [`rules/overrides/`](rules/overrides/) | Local additions to imported data; edit the FakeIP exceptions here. |
-| [`rules/generated/`](rules/generated/) | Combined JSON ready for consumption; built by the same script as the binaries. |
 | [`srs/`](srs/) | Published sing-box binary rule sets. |
 | [`dat/`](dat/) | Published line-based exports (domain rules and CIDRs, not binary GeoSite files). |
 | [`scripts/`](scripts/) | Source refresh, validation, compiler installation, and build. |
@@ -23,15 +21,17 @@ artifacts: their sources were removed previously and they are not regenerated.
 
 ## FakeIP exclusions
 
-- **JSON:** [`rules/generated/fake-ip-filter.json`](rules/generated/fake-ip-filter.json)
+- **Editable JSON:** [`rules/local/fake-ip-filter.json`](rules/local/fake-ip-filter.json)
 - **SRS v2:** [`srs/fake-ip-filter.srs`](srs/fake-ip-filter.srs)
 - **Text:** [`dat/fake-ip-filter.dat`](dat/fake-ip-filter.dat)
 
-The build combines the [v2fly NTP](https://github.com/v2fly/domain-list-community/blob/master/data/category-ntp)
+The JSON is the single source for both exports. It contains entries imported
+from the [v2fly NTP](https://github.com/v2fly/domain-list-community/blob/master/data/category-ntp)
 and [STUN](https://github.com/v2fly/domain-list-community/blob/master/data/category-stun)
-lists, including the NTP regional includes, with locally reviewed LAN suffixes
-and exact probe domains for Apple, Android, Windows, and Firefox. The
-[v2fly MIT notice](rules/upstream/v2fly/LICENSE) is included. The local probe
+lists (including NTP regional entries), plus locally reviewed LAN suffixes
+and exact probe domains for Apple, Android, Windows, and Firefox. Edit this
+file directly; scheduled refreshes do not modify it. The
+[v2fly MIT notice](rules/local/fake-ip-filter.LICENSE) is included. The local probe
 selection is intentionally narrower than the
 [upstream connectivity-check list](https://github.com/v2fly/domain-list-community/blob/master/data/connectivity-check):
 in particular, it does not exclude the whole `www.gstatic.com` host.
@@ -54,7 +54,7 @@ It calls the fork's native SRS writer directly and writes SRS v2.
 bash scripts/install_hiddify_compiler.sh /tmp/singbox-ruleset-bin
 compiler=/tmp/singbox-ruleset-bin/hiddify-rules-compile
 
-# Regenerate from the checked-in source snapshots.
+# Regenerate from the checked-in sources.
 python3 scripts/update_rules.py --compiler "$compiler"
 
 # Check reproducibility without changing published files.

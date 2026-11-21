@@ -5,22 +5,16 @@ import os
 import re
 import subprocess
 import zlib
-from collections import defaultdict
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from urllib.request import Request, urlopen
 
 
 ROOT = Path(__file__).resolve().parents[1]
+LOCAL = Path("rules/local")
 DUSTIN = Path("rules/upstream/dustinwin")
-V2FLY = Path("rules/upstream/v2fly")
-FAKE_IP = Path("rules/generated/fake-ip-filter.json")
+FAKE_IP = LOCAL / "fake-ip-filter.json"
 REMOTE_RULES = ("ads", "cn", "cnip", "proxy")
-TIME_AND_STUN = ("category-ntp", "category-ntp-cn", "category-ntp-jp", "category-stun")
-UPSTREAMS = (
-    ("DustinWin/ruleset_geodata", "sing-box-ruleset", {f"{name}.json": DUSTIN / f"{name}.json" for name in REMOTE_RULES}),
-    ("v2fly/domain-list-community", "master", {f"data/{name}": V2FLY / name for name in TIME_AND_STUN}),
-)
 LEGACY_NAMES = {Path("cnc-ipv4"), Path("globalMedia")}
 DAT_FIELDS = {
     "domain": "full:",
@@ -30,7 +24,6 @@ DAT_FIELDS = {
     "ip_cidr": "",
 }
 MAX_DOWNLOAD = 16 * 1024 * 1024
-DOMAIN_LABEL = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?")
 SHA1 = re.compile(r"[0-9a-f]{40}")
 SRS_V2 = b"SRS\x02"
 MAX_SRS_PAYLOAD = 64 * 1024 * 1024
@@ -98,55 +91,12 @@ def rules_json(data, path, allowed=DAT_FIELDS):
     return doc
 
 
-def fake_ip_source(updates):
-    fields = defaultdict(set)
-    active = set()
-    seen = set()
-
-    def include(name):
-        if name not in TIME_AND_STUN or name in active:
-            raise ValueError(f"unsupported or cyclic domain list include: {name}")
-        if name in seen:
-            return
-        active.add(name)
-        entries = 0
-        for line in source_bytes(V2FLY / name, updates).decode("utf-8").splitlines():
-            parts = line.partition("#")[0].split()
-            if not parts:
-                continue
-            token, *attributes = parts
-            if any(not attr.startswith("@") for attr in attributes):
-                raise ValueError(f"{name}: invalid attributes in {token}")
-            kind, sep, value = token.partition(":")
-            if sep and kind == "include" and not attributes:
-                include(value)
-            else:
-                domain = (value if sep else kind).lower()
-                labels = domain.split(".")
-                if (sep and kind not in ("full", "domain")) or len(labels) < 2 or not all(DOMAIN_LABEL.fullmatch(label) for label in labels):
-                    raise ValueError(f"{name}: unsupported domain rule: {token}")
-                fields["domain" if kind == "full" else "domain_suffix"].add(domain)
-            entries += 1
-        if not entries:
-            raise ValueError(f"{name}: empty domain list")
-        active.remove(name)
-        seen.add(name)
-
-    include("category-ntp")
-    include("category-stun")
-    path = Path("rules/overrides/fake-ip-filter.json")
-    for rule in rules_json(source_bytes(path, updates), path, allowed=("domain", "domain_suffix"))["rules"]:
-        for key, values in rule.items():
-            fields[key].update(values)
-
+def validate_fake_ip(doc):
+    domains = {value.lower() for rule in doc["rules"] for value in rule.get("domain", [])}
+    suffixes = {value.lower() for rule in doc["rules"] for value in rule.get("domain_suffix", [])}
     for name in ("www.gstatic.com", "www.baidu.com", "www.bilibili.com"):
-        if name in fields["domain"] or any(
-            name == suffix or name.endswith("." + suffix.lstrip(".")) for suffix in fields["domain_suffix"]
-        ):
+        if name in domains or any(name == suffix or name.endswith("." + suffix.lstrip(".")) for suffix in suffixes):
             raise ValueError(f"FakeIP exclusions must not match {name}")
-
-    rules = {key: sorted(values) for key, values in sorted(fields.items())}
-    return (json.dumps({"version": 2, "rules": [rules]}, indent=2) + "\n").encode()
 
 
 def dat_bytes(doc):
@@ -162,18 +112,21 @@ def dat_bytes(doc):
 def build(stage, updates, compiler):
     outputs = {}
     inputs = {
-        file.relative_to(ROOT / "rules/local").with_suffix(""): file.relative_to(ROOT)
-        for file in (ROOT / "rules/local").rglob("*.json")
+        file.relative_to(ROOT / LOCAL).with_suffix(""): file.relative_to(ROOT)
+        for file in (ROOT / LOCAL).rglob("*.json")
     }
     extra = {Path("remote") / name: DUSTIN / f"{name}.json" for name in REMOTE_RULES}
-    extra[Path("fake-ip-filter")] = FAKE_IP
     if inputs.keys() & (extra.keys() | LEGACY_NAMES):
         raise ValueError("local source conflicts with a reserved rule name")
     inputs.update(extra)
 
     for name, path in sorted(inputs.items()):
         data = source_bytes(path, updates)
-        doc = rules_json(data, path)
+        if path == FAKE_IP:
+            doc = rules_json(data, path, allowed=("domain", "domain_suffix"))
+            validate_fake_ip(doc)
+        else:
+            doc = rules_json(data, path)
         source = stage / path
         source.parent.mkdir(parents=True, exist_ok=True)
         source.write_bytes(data)
@@ -231,9 +184,10 @@ def main():
     args = parser.parse_args()
     updates = {}
     if args.refresh:
-        for feed in UPSTREAMS:
-            updates.update(refresh_sources(*feed))
-    updates[FAKE_IP] = fake_ip_source(updates)
+        updates = refresh_sources(
+            "DustinWin/ruleset_geodata", "sing-box-ruleset",
+            {f"{name}.json": DUSTIN / f"{name}.json" for name in REMOTE_RULES},
+        )
 
     with TemporaryDirectory(prefix=".rule-build-", dir=ROOT) as directory:
         stage = Path(directory)
