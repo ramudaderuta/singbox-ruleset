@@ -1,0 +1,265 @@
+import argparse
+import hashlib
+import json
+import os
+import re
+import subprocess
+import zlib
+from collections import defaultdict
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from urllib.request import Request, urlopen
+
+
+ROOT = Path(__file__).resolve().parents[1]
+DUSTIN = Path("rules/upstream/dustinwin")
+V2FLY = Path("rules/upstream/v2fly")
+FAKE_IP = Path("rules/generated/fake-ip-filter.json")
+REMOTE_RULES = ("ads", "cn", "cnip", "proxy")
+TIME_AND_STUN = ("category-ntp", "category-ntp-cn", "category-ntp-jp", "category-stun")
+UPSTREAMS = (
+    ("DustinWin/ruleset_geodata", "sing-box-ruleset", {f"{name}.json": DUSTIN / f"{name}.json" for name in REMOTE_RULES}),
+    ("v2fly/domain-list-community", "master", {f"data/{name}": V2FLY / name for name in TIME_AND_STUN}),
+)
+LEGACY_NAMES = {Path("cnc-ipv4"), Path("globalMedia")}
+DAT_FIELDS = {
+    "domain": "full:",
+    "domain_suffix": "domain:",
+    "domain_keyword": "keyword:",
+    "domain_regex": "regexp:",
+    "ip_cidr": "",
+}
+MAX_DOWNLOAD = 16 * 1024 * 1024
+DOMAIN_LABEL = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?")
+SHA1 = re.compile(r"[0-9a-f]{40}")
+SRS_V2 = b"SRS\x02"
+MAX_SRS_PAYLOAD = 64 * 1024 * 1024
+
+
+def download(url):
+    with urlopen(Request(url, headers={"User-Agent": "singbox-ruleset-refresh"}), timeout=25) as response:
+        data = response.read(MAX_DOWNLOAD + 1)
+    if not data or len(data) > MAX_DOWNLOAD:
+        raise ValueError(f"invalid download size: {url}")
+    return data
+
+
+def git_blob_sha(data):
+    return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
+
+
+def refresh_sources(repo, branch, paths):
+    api = f"https://api.github.com/repos/{repo}"
+    ref = json.loads(download(f"{api}/git/ref/heads/{branch}"))["object"]["sha"]
+    if not SHA1.fullmatch(ref):
+        raise ValueError(f"{repo}: invalid commit SHA")
+    tree = json.loads(download(f"{api}/git/trees/{ref}?recursive=1"))
+    if tree["truncated"] is not False:
+        raise ValueError(f"{repo}: incomplete tree")
+    entries = {item["path"]: item for item in tree["tree"]}
+    changes = {}
+    for remote, local in paths.items():
+        entry = entries.get(remote, {})
+        sha = entry.get("sha", "")
+        size = entry.get("size", 0)
+        if entry.get("type") != "blob" or entry.get("mode") != "100644" or not SHA1.fullmatch(sha) or not 0 < size <= MAX_DOWNLOAD:
+            raise ValueError(f"{repo}: missing or invalid source {remote}")
+        existing = ROOT / local
+        if existing.is_file() and git_blob_sha(existing.read_bytes()) == sha:
+            continue
+        data = download(f"https://raw.githubusercontent.com/{repo}/{ref}/{remote}")
+        if len(data) != size or git_blob_sha(data) != sha:
+            raise ValueError(f"{repo}: invalid blob {remote}")
+        changes[local] = data
+    print(f"{repo}@{ref}: {len(changes)} of {len(paths)} source files downloaded")
+    return changes
+
+
+def source_bytes(path, overrides):
+    return overrides[path] if path in overrides else (ROOT / path).read_bytes()
+
+
+def rules_json(data, path, allowed=DAT_FIELDS):
+    doc = json.loads(data)
+    if not isinstance(doc, dict) or type(doc.get("version")) is not int or not 1 <= doc["version"] <= 5:
+        raise ValueError(f"{path}: unsupported source version")
+    rules = doc.get("rules")
+    if not isinstance(rules, list) or not rules:
+        raise ValueError(f"{path}: no rules")
+    for rule in rules:
+        if not isinstance(rule, dict) or not rule or any(key not in allowed for key in rule):
+            raise ValueError(f"{path}: unsupported rule fields")
+        for key, values in rule.items():
+            if not isinstance(values, list) or not values or any(
+                not isinstance(value, str) or not value.strip() or "\n" in value or "\r" in value or "\0" in value
+                for value in values
+            ):
+                raise ValueError(f"{path}: invalid {key} values")
+    return doc
+
+
+def fake_ip_source(updates):
+    fields = defaultdict(set)
+    active = set()
+    seen = set()
+
+    def include(name):
+        if name not in TIME_AND_STUN or name in active:
+            raise ValueError(f"unsupported or cyclic domain list include: {name}")
+        if name in seen:
+            return
+        active.add(name)
+        entries = 0
+        for line in source_bytes(V2FLY / name, updates).decode("utf-8").splitlines():
+            parts = line.partition("#")[0].split()
+            if not parts:
+                continue
+            token, *attributes = parts
+            if any(not attr.startswith("@") for attr in attributes):
+                raise ValueError(f"{name}: invalid attributes in {token}")
+            kind, sep, value = token.partition(":")
+            if sep and kind == "include" and not attributes:
+                include(value)
+            else:
+                domain = (value if sep else kind).lower()
+                labels = domain.split(".")
+                if (sep and kind not in ("full", "domain")) or len(labels) < 2 or not all(DOMAIN_LABEL.fullmatch(label) for label in labels):
+                    raise ValueError(f"{name}: unsupported domain rule: {token}")
+                fields["domain" if kind == "full" else "domain_suffix"].add(domain)
+            entries += 1
+        if not entries:
+            raise ValueError(f"{name}: empty domain list")
+        active.remove(name)
+        seen.add(name)
+
+    include("category-ntp")
+    include("category-stun")
+    path = Path("rules/overrides/fake-ip-filter.json")
+    for rule in rules_json(source_bytes(path, updates), path, allowed=("domain", "domain_suffix"))["rules"]:
+        for key, values in rule.items():
+            fields[key].update(values)
+
+    for name in ("www.gstatic.com", "www.baidu.com", "www.bilibili.com"):
+        if name in fields["domain"] or any(
+            name == suffix or name.endswith("." + suffix.lstrip(".")) for suffix in fields["domain_suffix"]
+        ):
+            raise ValueError(f"FakeIP exclusions must not match {name}")
+
+    rules = {key: sorted(values) for key, values in sorted(fields.items())}
+    return (json.dumps({"version": 2, "rules": [rules]}, indent=2) + "\n").encode()
+
+
+def dat_bytes(doc):
+    lines = {
+        prefix + (value.lstrip(".") if prefix else value)
+        for rule in doc["rules"]
+        for key, prefix in DAT_FIELDS.items()
+        for value in rule.get(key, [])
+    }
+    return ("\n".join(sorted(lines)) + "\n").encode()
+
+
+def build(stage, updates, compiler):
+    outputs = {}
+    inputs = {
+        file.relative_to(ROOT / "rules/local").with_suffix(""): file.relative_to(ROOT)
+        for file in (ROOT / "rules/local").rglob("*.json")
+    }
+    extra = {Path("remote") / name: DUSTIN / f"{name}.json" for name in REMOTE_RULES}
+    extra[Path("fake-ip-filter")] = FAKE_IP
+    if inputs.keys() & (extra.keys() | LEGACY_NAMES):
+        raise ValueError("local source conflicts with a reserved rule name")
+    inputs.update(extra)
+
+    for name, path in sorted(inputs.items()):
+        data = source_bytes(path, updates)
+        doc = rules_json(data, path)
+        source = stage / path
+        source.parent.mkdir(parents=True, exist_ok=True)
+        source.write_bytes(data)
+
+        target = Path("srs") / name.with_suffix(".srs")
+        binary = stage / target
+        binary.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.run([compiler, "rule-set", "compile", str(source), "-o", str(binary)], check=True)
+        payload = binary.read_bytes()
+        if len(payload) <= 4 or payload[:4] != SRS_V2:
+            raise ValueError(f"{target}: expected SRS format v2")
+        outputs[target] = binary
+
+        target = Path("dat") / name.with_suffix(".dat")
+        text = stage / target
+        text.parent.mkdir(parents=True, exist_ok=True)
+        text.write_bytes(dat_bytes(doc))
+        outputs[target] = text
+
+    for path in (Path("srs"), Path("dat")):
+        unmanaged = {file.relative_to(ROOT) for file in (ROOT / path).rglob(f"*.{path.name}")} - outputs.keys()
+        if any(file.relative_to(path).with_suffix("") not in LEGACY_NAMES for file in unmanaged):
+            raise ValueError(f"{path}: remove or explicitly retain orphaned artifacts: {sorted(unmanaged)}")
+    return outputs
+
+
+def srs_payload(data):
+    stream = zlib.decompressobj()
+    payload = stream.decompress(data[len(SRS_V2):], MAX_SRS_PAYLOAD)
+    if not stream.eof or stream.unused_data or stream.unconsumed_tail:
+        raise ValueError("invalid or oversized SRS payload")
+    return payload
+
+
+def matches(path, candidate):
+    if not path.is_file():
+        return False
+    current, built = path.read_bytes(), candidate.read_bytes()
+    if current == built:
+        return True
+    if path.suffix != ".srs" or not (current.startswith(SRS_V2) and built.startswith(SRS_V2)):
+        return False
+    try:
+        return srs_payload(current) == srs_payload(built)
+    except (ValueError, zlib.error):
+        return False
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Refresh sources and build sing-box rule sets.")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--refresh", action="store_true", help="Fetch changed upstream blobs before building.")
+    modes.add_argument("--check", action="store_true", help="Build offline and fail if committed outputs would change.")
+    parser.add_argument("--compiler", default="hiddify-rules-compile", help="Path to the rules compiler.")
+    args = parser.parse_args()
+    updates = {}
+    if args.refresh:
+        for feed in UPSTREAMS:
+            updates.update(refresh_sources(*feed))
+    updates[FAKE_IP] = fake_ip_source(updates)
+
+    with TemporaryDirectory(prefix=".rule-build-", dir=ROOT) as directory:
+        stage = Path(directory)
+        outputs = build(stage, updates, args.compiler)
+        for name, data in updates.items():
+            target = stage / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
+            outputs[name] = target
+        changes = {
+            name: candidate
+            for name, candidate in outputs.items()
+            if not matches(ROOT / name, candidate)
+        }
+        if args.check and changes:
+            parser.exit(1, "Out of date: " + ", ".join(str(name) for name in sorted(changes)) + "\n")
+        for name, candidate in sorted(changes.items()):
+            dest = ROOT / name
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            os.replace(candidate, dest)
+            print(f"Updated {name}")
+        print(f"Built {len(outputs) - len(updates)} artifacts; {len(changes)} changed.")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (ValueError, OSError, subprocess.CalledProcessError) as error:
+        raise SystemExit(str(error)) from error

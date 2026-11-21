@@ -1,0 +1,71 @@
+name: Rules
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 19 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+        with:
+          go-version: '1.27.4'
+          cache: false
+      - name: Build pinned Hiddify rules compiler
+        run: bash scripts/install_hiddify_compiler.sh "$RUNNER_TEMP/rules-bin"
+      - name: Check rules and published artifacts
+        run: python3 scripts/update_rules.py --check --compiler "$RUNNER_TEMP/rules-bin/hiddify-rules-compile"
+
+  publish:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    concurrency:
+      group: publish-rules-main
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+        with:
+          go-version: '1.27.4'
+          cache: false
+      - name: Build pinned Hiddify rules compiler
+        run: bash scripts/install_hiddify_compiler.sh "$RUNNER_TEMP/rules-bin"
+      - name: Refresh and build rule sets
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          args=()
+          if [[ "$EVENT_NAME" == schedule || "$EVENT_NAME" == workflow_dispatch ]]; then
+            args+=(--refresh)
+          fi
+          python3 scripts/update_rules.py "${args[@]}" --compiler "$RUNNER_TEMP/rules-bin/hiddify-rules-compile"
+      - name: Publish source snapshots and artifacts together
+        run: |
+          git add -- rules/upstream rules/generated srs dat
+          if git diff --cached --quiet; then
+            echo "Rules are already up to date."
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m 'Refresh rule sets'
+          git push origin HEAD:refs/heads/main
