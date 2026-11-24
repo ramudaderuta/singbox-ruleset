@@ -22,19 +22,26 @@ artifacts: their sources were removed previously and they are not regenerated.
 The v5 sources `rules/local/locals.json` (direct) and `rules/local/shs.json`
 (South proxy) use logical headless rules. For sing-box, load the JSON as
 `format: source` or the corresponding `srs/*.srs` as `format: binary`.
-In `route.rules`, match `locals`
-to `DIRECT`, then the existing `PROXY` rules, then `shs` to `CN`.
+In `route.rules`, put custom CN rules first, then `DIRECT` (including
+`locals`), then `PROXY`, then the CN rule sets (including `shs`).
+Do not add a negated `shs` test to the preceding routes: their order
+already resolves overlap.
 They classify explicit destinations only, not `route.final`.
 Source networks match the address visible to the inbound. If a choice depends
 on a DNS result that the router does not have, neither rule set claims it.
+Each source has one dual-stack `/0` test, scoped to branches that need to
+check whether a destination IP is known. It is not a catch-all route.
 
 For mosdns, regenerate the text lists without compiling SRS with
 `python3 scripts/update_rules.py --mosdns-local` (add `--check` to check for
-stale outputs). Load both `dat/locals.dat` and `dat/shs.dat` as `domain_set`
-files and match them together in **Direct domains → CN**. These lists export
-positive destination names before DNS resolution; they can overlap because
-both use the same resolver. IP-only destinations and traffic-routing guards
-are not DNS rules. A leading-dot suffix still excludes the bare domain.
+stale outputs). Load `dat/locals.dat`, `dat/shs.dat` and
+`dat/locals-excluded.dat` as `domain_set` files. In **Direct domains → CN**,
+match the two positive lists together and exclude the third list in that
+same rule (`!qname $locals_excluded_set`). This keeps a removed exact name
+from being picked up again by a parent suffix or regex. Apply the exclusion
+only to the PAC lists, not to independently maintained CN rules. IP-only
+destinations and other traffic-routing guards are not DNS rules. A
+leading-dot suffix still excludes the bare domain.
 
 The old `locals-web`, `locals-ip`, `shs-web`, and `shs-ip` sources and exports
 have been removed. Migrate consumers separately; the new rule sets
