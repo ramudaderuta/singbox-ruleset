@@ -13,11 +13,32 @@ plain-text DAT exports. Use the files under `srs/` for sing-box subscriptions.
 | [`dat/`](dat/) | Published line-based exports (domain rules and CIDRs, not binary GeoSite files). |
 | [`scripts/`](scripts/) | Source refresh, validation, compiler installation, and build. |
 
-The existing SRS and DAT paths stay unchanged, including `srs/remote/{ads,cn,cnip,proxy}.srs`,
+The remaining SRS and DAT paths stay unchanged, including `srs/remote/{ads,cn,cnip,proxy}.srs`,
 `srs/private-ip.srs`, `srs/game-cdn.srs`, and `srs/pt-site.srs`. The old root JSON
 files now live under `rules/local/`; the old `remote/*.json` files live under
 `rules/upstream/dustinwin/`. `cnc-ipv4` and `globalMedia` are frozen legacy
 artifacts: their sources were removed previously and they are not regenerated.
+
+The v5 sources `rules/local/locals.json` (direct) and `rules/local/shs.json`
+(South proxy) use logical headless rules. For sing-box, load the JSON as
+`format: source` or the corresponding `srs/*.srs` as `format: binary`.
+In `route.rules`, match `locals`
+to `DIRECT`, then the existing `PROXY` rules, then `shs` to `CN`.
+They classify explicit destinations only, not `route.final`.
+Source networks match the address visible to the inbound. If a choice depends
+on a DNS result that the router does not have, neither rule set claims it.
+
+For mosdns, regenerate the text lists without compiling SRS with
+`python3 scripts/update_rules.py --mosdns-local` (add `--check` to check for
+stale outputs). Load both `dat/locals.dat` and `dat/shs.dat` as `domain_set`
+files and match them together in **Direct domains → CN**. These lists export
+positive destination names before DNS resolution; they can overlap because
+both use the same resolver. IP-only destinations and traffic-routing guards
+are not DNS rules. A leading-dot suffix still excludes the bare domain.
+
+The old `locals-web`, `locals-ip`, `shs-web`, and `shs-ip` sources and exports
+have been removed. Migrate consumers separately; the new rule sets
+are derived from PAC policy and are not a coverage-preserving rename.
 
 ## FakeIP exclusions
 

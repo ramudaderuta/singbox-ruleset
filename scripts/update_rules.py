@@ -1,5 +1,6 @@
 import argparse
 import hashlib
+import ipaddress
 import json
 import os
 import re
@@ -12,6 +13,8 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL = Path("rules/local")
+MOSDNS_LOCAL = {LOCAL / "locals.json", LOCAL / "shs.json"}
+DNS_FIELDS = {"domain", "domain_suffix", "domain_regex"}
 DUSTIN = Path("rules/upstream/dustinwin")
 FAKE_IP = LOCAL / "fake-ip-filter.json"
 REMOTE_RULES = ("ads", "cn", "cnip", "proxy")
@@ -109,6 +112,91 @@ def dat_bytes(doc):
     return ("\n".join(sorted(lines)) + "\n").encode()
 
 
+def dns_values(values, path):
+    if (not isinstance(values, list) or not values or
+            any(not isinstance(s, str) or not s or
+                "#" in s or "\0" in s or any(c.isspace() for c in s) for s in values)):
+        raise ValueError(f"{path}: invalid mosdns matcher values")
+    return values
+
+
+def dns_leaf(rule, fields, path):
+    if not isinstance(rule, dict) or not rule or not rule.keys() <= fields:
+        raise ValueError(f"{path}: unexpected matcher structure in local DNS export")
+    for key, values in rule.items():
+        if key == "invert":
+            if values is not True:
+                raise ValueError(f"{path}: expected an inverted matcher")
+        else:
+            for value in dns_values(values, path):
+                if key in {"ip_cidr", "source_ip_cidr"}:
+                    ipaddress.ip_network(value)
+
+
+def dns_guard(rule, path):
+    if isinstance(rule, dict) and rule.get("type") == "logical":
+        if (rule.keys() - {"invert"} != {"type", "mode", "rules"} or
+                rule["mode"] not in {"and", "or"} or
+                ("invert" in rule and rule["invert"] is not True) or
+                not isinstance(rule["rules"], list) or not rule["rules"]):
+            raise ValueError(f"{path}: unexpected logical guard in local DNS export")
+        for child in rule["rules"]:
+            dns_guard(child, path)
+    else:
+        dns_leaf(rule, {"ip_cidr", "source_ip_cidr", "invert"}, path)
+
+
+def mosdns_dat_bytes(data, path):
+    """Export positive qnames; both outputs feed the same DNS resolver."""
+    doc = json.loads(data)
+    if (not isinstance(doc, dict) or doc.get("version") != 5 or
+            not isinstance(doc.get("rules"), list) or not doc["rules"]):
+        raise ValueError(f"{path}: expected a nonempty v5 local rule set")
+    lines = set()
+    for rule in doc["rules"]:
+        if not isinstance(rule, dict):
+            raise ValueError(f"{path}: invalid rule")
+        primary, guards = rule, []
+        if rule.get("type") == "logical":
+            if (rule.keys() != {"type", "mode", "rules"} or rule["mode"] != "and" or
+                    not isinstance(rule["rules"], list) or len(rule["rules"]) < 2):
+                raise ValueError(f"{path}: expected a destination followed by guards")
+            primary, *guards = rule["rules"]
+        dns_leaf(primary, DNS_FIELDS | {"ip_cidr", "source_ip_cidr"}, path)
+        is_ip = "ip_cidr" in primary
+        if is_ip and (primary.keys() & DNS_FIELDS or
+                      {"domain_regex": [".+"], "invert": True} not in guards):
+            raise ValueError(f"{path}: expected an IP-only destination")
+        if not is_ip and not primary.keys() & DNS_FIELDS:
+            raise ValueError(f"{path}: no destination matcher")
+        for guard in guards:
+            if isinstance(guard, dict) and guard.get("invert") is True and guard.keys() & DNS_FIELDS:
+                dns_leaf(guard, DNS_FIELDS | {"invert"}, path)
+            else:
+                dns_guard(guard, path)
+        if is_ip:
+            continue
+        lines.update("full:" + name for name in primary.get("domain", []))
+        lines.update("regexp:" + pattern for pattern in primary.get("domain_regex", []))
+        for suffix in primary.get("domain_suffix", []):
+            # mosdns domain: includes the root; a leading-dot sing-box suffix does not.
+            lines.add("regexp:" + re.escape(suffix) + "$" if suffix.startswith(".") else "domain:" + suffix)
+    if not lines:
+        raise ValueError(f"{path}: no qnames to export")
+    return ("\n".join(sorted(lines)) + "\n").encode()
+
+
+def build_mosdns_local(stage):
+    outputs = {}
+    for path in sorted(MOSDNS_LOCAL):
+        target = Path("dat") / path.with_suffix(".dat").name
+        candidate = stage / target
+        candidate.parent.mkdir(parents=True, exist_ok=True)
+        candidate.write_bytes(mosdns_dat_bytes((ROOT / path).read_bytes(), path))
+        outputs[target] = candidate
+    return outputs
+
+
 def build(stage, updates, compiler):
     outputs = {}
     inputs = {
@@ -122,11 +210,14 @@ def build(stage, updates, compiler):
 
     for name, path in sorted(inputs.items()):
         data = source_bytes(path, updates)
-        if path == FAKE_IP:
+        if path in MOSDNS_LOCAL:
+            text_data = mosdns_dat_bytes(data, path)
+        elif path == FAKE_IP:
             doc = rules_json(data, path, allowed=("domain", "domain_suffix"))
             validate_fake_ip(doc)
+            text_data = dat_bytes(doc)
         else:
-            doc = rules_json(data, path)
+            text_data = dat_bytes(rules_json(data, path))
         source = stage / path
         source.parent.mkdir(parents=True, exist_ok=True)
         source.write_bytes(data)
@@ -143,7 +234,7 @@ def build(stage, updates, compiler):
         target = Path("dat") / name.with_suffix(".dat")
         text = stage / target
         text.parent.mkdir(parents=True, exist_ok=True)
-        text.write_bytes(dat_bytes(doc))
+        text.write_bytes(text_data)
         outputs[target] = text
 
     for path in (Path("srs"), Path("dat")):
@@ -180,8 +271,11 @@ def main():
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("--refresh", action="store_true", help="Fetch changed upstream blobs before building.")
     modes.add_argument("--check", action="store_true", help="Build offline and fail if committed outputs would change.")
+    parser.add_argument("--mosdns-local", action="store_true", help="Export only the two mosdns qname lists.")
     parser.add_argument("--compiler", default="hiddify-rules-compile", help="Path to the rules compiler.")
     args = parser.parse_args()
+    if args.mosdns_local and args.refresh:
+        parser.error("--mosdns-local cannot be combined with --refresh")
     updates = {}
     if args.refresh:
         updates = refresh_sources(
@@ -191,7 +285,7 @@ def main():
 
     with TemporaryDirectory(prefix=".rule-build-", dir=ROOT) as directory:
         stage = Path(directory)
-        outputs = build(stage, updates, args.compiler)
+        outputs = build_mosdns_local(stage) if args.mosdns_local else build(stage, updates, args.compiler)
         for name, data in updates.items():
             target = stage / name
             target.parent.mkdir(parents=True, exist_ok=True)

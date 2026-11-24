@@ -1,0 +1,1431 @@
+{
+  "version": 5,
+  "rules": [
+    {
+      "domain": [
+        "disw.cyberark.cloud",
+        "disw.webaccess.cyberark.cloud",
+        "dscportal.is.panasonic.cn",
+        "github.com",
+        "panasonic-connect.atlassian.net",
+        "panasonic-fa.atlassian.net",
+        "portal.alero.io",
+        "secufex.erlm.siemens.de",
+        "tableau4.is.jp.panasonic.com",
+        "uatispcportal.is.panasonic.cn"
+      ],
+      "domain_suffix": [
+        ".cloud.teamcenter.com",
+        ".siemens.com"
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "domain_suffix": [
+            ".amazonaws.com",
+            ".aws.amazon.com"
+          ]
+        },
+        {
+          "source_ip_cidr": [
+            "10.194.32.0/21",
+            "10.194.40.0/23",
+            "137.40.143.0/24",
+            "137.40.144.0/24",
+            "10.254.22.0/23",
+            "158.118.62.0/23",
+            "10.197.224.0/23",
+            "10.194.40.0/24",
+            "137.40.146.0/23",
+            "10.198.26.0/23",
+            "10.197.216.0/23",
+            "10.197.218.0/24",
+            "137.40.158.0/24",
+            "10.197.240.0/21",
+            "10.194.40.0/23",
+            "10.254.200.0/23",
+            "10.198.48.0/23",
+            "10.194.56.0/23",
+            "137.40.193.0/24",
+            "137.40.194.0/24",
+            "10.198.40.0/22",
+            "10.198.44.0/23",
+            "10.198.44.0/23",
+            "10.254.60.0/23",
+            "158.118.88.0/24",
+            "158.118.75.0/24",
+            "10.254.57.0/24",
+            "158.118.76.0/24",
+            "158.118.85.0/24",
+            "10.198.50.0/23",
+            "10.198.52.0/22",
+            "10.198.112.0/22"
+          ],
+          "invert": true
+        }
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "domain": [
+            "auth1.is.jp.panasonic.com",
+            "auth1c.is.jp.panasonic.com",
+            "conf.eds.panasonic.com",
+            "extlywac01.palet.jp.panasonic.com",
+            "extlywac02.palet.jp.panasonic.com",
+            "extlyweb01.palet.jp.panasonic.com",
+            "extlyweb02.palet.jp.panasonic.com",
+            "extlywebconf.palet.jp.panasonic.com",
+            "it1-auth1.is.jp.panasonic.com",
+            "lync-ext-web.eds.panasonic.com",
+            "pxai.is.jp.panasonic.com",
+            "tableau-hr-dev.diya.jp.panasonic.com",
+            "tableau-hr.diya.jp.panasonic.com",
+            "tableau2.is.jp.panasonic.com",
+            "tableau5.is.jp.panasonic.com",
+            "ut1-auth1.is.jp.panasonic.com",
+            "ut1-auth1c.is.jp.panasonic.com",
+            "ut1-dcollabo.is.jp.panasonic.com",
+            "ut1-gec.is.jp.panasonic.com",
+            "www.mei.co.jp"
+          ]
+        },
+        {
+          "source_ip_cidr": [
+            "10.254.38.0/23",
+            "10.254.29.0/24",
+            "10.192.160.0/19",
+            "10.195.16.0/24",
+            "10.195.17.0/24",
+            "10.198.60.0/24",
+            "10.254.196.0/22",
+            "10.254.227.0/24",
+            "10.254.228.0/24",
+            "10.254.229.0/24",
+            "10.254.230.0/24",
+            "10.48.26.0/24",
+            "10.195.79.0/24"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.195.65.0/24",
+            "10.195.66.0/24",
+            "10.254.57.0/24",
+            "10.39.4.0/24",
+            "10.48.27.0/24",
+            "10.197.22.0/23",
+            "10.39.25.0/24",
+            "10.194.168.0/22",
+            "10.194.172.0/24",
+            "10.194.184.0/21",
+            "133.184.15.0/24",
+            "10.198.224.0/22",
+            "158.118.75.0/24",
+            "10.192.128.0/19",
+            "10.194.24.0/25",
+            "10.195.39.0/24",
+            "10.195.40.0/24",
+            "10.195.112.0/23",
+            "10.254.30.0/23",
+            "10.194.242.0/24",
+            "10.195.32.0/22",
+            "10.195.37.0/24",
+            "10.195.41.0/24",
+            "10.195.42.0/24",
+            "10.195.43.0/24",
+            "10.195.58.0/24",
+            "10.195.68.0/24",
+            "10.195.81.0/24",
+            "10.195.82.0/24",
+            "10.195.92.0/22",
+            "10.254.36.0/23",
+            "10.48.24.0/24",
+            "10.197.24.0/22",
+            "10.197.28.0/23",
+            "10.197.84.0/22"
+          ],
+          "invert": true
+        }
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "domain_regex": [
+            "^172\\..*\\..*\\..*$"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "0.0.0.0/0",
+            "::/0"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "172.16.0.0/12"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.254.38.0/23",
+            "10.254.29.0/24",
+            "10.192.160.0/19",
+            "10.195.16.0/24",
+            "10.195.17.0/24",
+            "10.198.60.0/24",
+            "10.254.196.0/22",
+            "10.254.227.0/24",
+            "10.254.228.0/24",
+            "10.254.229.0/24",
+            "10.254.230.0/24",
+            "10.48.26.0/24",
+            "10.195.79.0/24"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.195.65.0/24",
+            "10.195.66.0/24",
+            "10.254.57.0/24",
+            "10.39.4.0/24",
+            "10.48.27.0/24",
+            "10.197.22.0/23",
+            "10.39.25.0/24",
+            "10.194.168.0/22",
+            "10.194.172.0/24",
+            "10.194.184.0/21",
+            "133.184.15.0/24",
+            "10.198.224.0/22",
+            "158.118.75.0/24",
+            "10.192.128.0/19",
+            "10.194.24.0/25",
+            "10.195.39.0/24",
+            "10.195.40.0/24",
+            "10.195.112.0/23",
+            "10.254.30.0/23",
+            "10.194.242.0/24",
+            "10.195.32.0/22",
+            "10.195.37.0/24",
+            "10.195.41.0/24",
+            "10.195.42.0/24",
+            "10.195.43.0/24",
+            "10.195.58.0/24",
+            "10.195.68.0/24",
+            "10.195.81.0/24",
+            "10.195.82.0/24",
+            "10.195.92.0/22",
+            "10.254.36.0/23",
+            "10.48.24.0/24",
+            "10.197.24.0/22",
+            "10.197.28.0/23",
+            "10.197.84.0/22"
+          ],
+          "invert": true
+        },
+        {
+          "domain_suffix": [
+            ".aadrm.com",
+            ".adobe.com",
+            ".adobesign.com",
+            ".akamaiedge.net",
+            ".akamaized.net",
+            ".aliapp.org",
+            ".alibtrip.com",
+            ".alicdn.com",
+            ".aliyun.com",
+            ".amazonaws.com",
+            ".and63da.seac.jp",
+            ".asiainfo-sec.com",
+            ".auth.microsoft.cn",
+            ".aws.amazon.com",
+            ".azure-mobile.cn",
+            ".azure.com",
+            ".box.com",
+            ".box.net",
+            ".boxcdn.net",
+            ".boxcloud.com",
+            ".cdn.office.net",
+            ".chinacloud-mobile.cn",
+            ".chinacloudapi.cn",
+            ".chinacloudapp.cn",
+            ".chinacloudsites.cn",
+            ".cloud.microsoft",
+            ".cloud.panasonicautomotive.com",
+            ".cloudfront.net",
+            ".cn.pewg.panasonic.com",
+            ".cns.sanyo.co.jp",
+            ".corp.tpsemico.com",
+            ".denkogroup.jp",
+            ".dingtalk.cn",
+            ".dingtalk.com",
+            ".dingtalk.net",
+            ".dingtalkapps.com",
+            ".echocdn.com",
+            ".echosign.com",
+            ".eds.panasonic.com",
+            ".gagile.car.panasonic.com",
+            ".gds.panasonic.com",
+            ".glclm.car.panasonic.com",
+            ".hec.privatecloudedition.com",
+            ".hec.privatecloudedition2.com",
+            ".identity.oraclecloud.com",
+            ".intra.mobitera.cn",
+            ".intra.nplc.co.jp",
+            ".intra.panasonic.cn",
+            ".intra.panasonic.com.hk",
+            ".intra.panasonic.com.sg",
+            ".intra.panasonic.com.tw",
+            ".intra.panasonic.hk",
+            ".is.panasonic.cn",
+            ".jp.panasonic.com",
+            ".knowbe4.com",
+            ".live.com",
+            ".mac-j.co.jp",
+            ".mei.co.cn",
+            ".mei.co.jp",
+            ".meil2ks.panasonic.com.hk",
+            ".mew.co.jp",
+            ".mew.com",
+            ".microsoft.com",
+            ".microsoftonline.cn",
+            ".microsoftonline.com",
+            ".miraitranslator.com",
+            ".mmedia.jp",
+            ".msauth.cn",
+            ".msauthimages.cn",
+            ".mscs.com.sg",
+            ".msftauth.cn",
+            ".msftauth.net",
+            ".msftauthimages.cn",
+            ".mufg.jp",
+            ".nais-*.com",
+            ".nikkan.co.jp",
+            ".ocs.oraclecloud.com",
+            ".office.com",
+            ".office365.com",
+            ".onmschina.cn",
+            ".outlook.com",
+            ".panasonic-denko.co.jp",
+            ".panasonic-denkois.co.jp",
+            ".panasonic-electric-works.net",
+            ".papcdl.com",
+            ".partner.lync.cn",
+            ".partner.microsoftonline-i.cn",
+            ".partner.microsoftonline-i.net.cn",
+            ".partner.microsoftonline-m-i.cn",
+            ".partner.microsoftonline-m-i.net.cn",
+            ".partner.microsoftonline-m.cn",
+            ".partner.microsoftonline-m.net.cn",
+            ".partner.microsoftonline-p-i.cn",
+            ".partner.microsoftonline-p-i.net.cn",
+            ".partner.microsoftonline-p.cn",
+            ".partner.microsoftonline-p.net.cn",
+            ".partner.microsoftonline.net.cn",
+            ".partner.office365.cn",
+            ".partner.officewebapps.cn",
+            ".partner.outlook.cn",
+            ".pasafilemgr.car.panasonic.com",
+            ".pewsh.local",
+            ".pwapblgz.panasonic.com",
+            ".pwc.com",
+            ".pwst.cn",
+            ".secsuz.sanyo-cn.com",
+            ".sgwcsvc.jp",
+            ".sharepoint.cn",
+            ".skype.com",
+            ".smew.com.cn",
+            ".sunx.co.jp",
+            ".sunx.com",
+            ".trendmicro.com",
+            ".trendmicro.com.cn",
+            ".wilcom.com.cn",
+            ".windowsazure.cn",
+            ".windowsupdate.com",
+            ".yammer.com",
+            ".zoom.us"
+          ],
+          "domain_regex": [
+            "^172\\.18\\..*\\..*$",
+            "^172\\.19\\..*\\..*$",
+            "^172\\.25\\.16\\..*$",
+            "^172\\.26\\..*\\..*$",
+            "^172\\.27\\..*\\..*$"
+          ],
+          "invert": true
+        }
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "domain_regex": [
+            "^133\\.183\\..*\\..*$"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "133.183.96.0/19",
+            "133.183.128.0/20"
+          ]
+        },
+        {
+          "source_ip_cidr": [
+            "10.254.38.0/23",
+            "10.254.29.0/24",
+            "10.192.160.0/19",
+            "10.195.16.0/24",
+            "10.195.17.0/24",
+            "10.198.60.0/24",
+            "10.254.196.0/22",
+            "10.254.227.0/24",
+            "10.254.228.0/24",
+            "10.254.229.0/24",
+            "10.254.230.0/24",
+            "10.48.26.0/24",
+            "10.195.79.0/24"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.195.65.0/24",
+            "10.195.66.0/24",
+            "10.254.57.0/24",
+            "10.39.4.0/24",
+            "10.48.27.0/24",
+            "10.197.22.0/23",
+            "10.39.25.0/24",
+            "10.194.168.0/22",
+            "10.194.172.0/24",
+            "10.194.184.0/21",
+            "133.184.15.0/24",
+            "10.198.224.0/22",
+            "158.118.75.0/24",
+            "10.192.128.0/19",
+            "10.194.24.0/25",
+            "10.195.39.0/24",
+            "10.195.40.0/24",
+            "10.195.112.0/23",
+            "10.254.30.0/23",
+            "10.194.242.0/24",
+            "10.195.32.0/22",
+            "10.195.37.0/24",
+            "10.195.41.0/24",
+            "10.195.42.0/24",
+            "10.195.43.0/24",
+            "10.195.58.0/24",
+            "10.195.68.0/24",
+            "10.195.81.0/24",
+            "10.195.82.0/24",
+            "10.195.92.0/22",
+            "10.254.36.0/23",
+            "10.48.24.0/24",
+            "10.197.24.0/22",
+            "10.197.28.0/23",
+            "10.197.84.0/22"
+          ],
+          "invert": true
+        },
+        {
+          "domain_suffix": [
+            ".aadrm.com",
+            ".adobe.com",
+            ".adobesign.com",
+            ".akamaiedge.net",
+            ".akamaized.net",
+            ".aliapp.org",
+            ".alibtrip.com",
+            ".alicdn.com",
+            ".aliyun.com",
+            ".amazonaws.com",
+            ".and63da.seac.jp",
+            ".asiainfo-sec.com",
+            ".auth.microsoft.cn",
+            ".aws.amazon.com",
+            ".azure-mobile.cn",
+            ".azure.com",
+            ".box.com",
+            ".box.net",
+            ".boxcdn.net",
+            ".boxcloud.com",
+            ".cdn.office.net",
+            ".chinacloud-mobile.cn",
+            ".chinacloudapi.cn",
+            ".chinacloudapp.cn",
+            ".chinacloudsites.cn",
+            ".cloud.microsoft",
+            ".cloud.panasonicautomotive.com",
+            ".cloudfront.net",
+            ".cn.pewg.panasonic.com",
+            ".cns.sanyo.co.jp",
+            ".corp.tpsemico.com",
+            ".denkogroup.jp",
+            ".dingtalk.cn",
+            ".dingtalk.com",
+            ".dingtalk.net",
+            ".dingtalkapps.com",
+            ".echocdn.com",
+            ".echosign.com",
+            ".edi.niandc.ne.jp",
+            ".eds.panasonic.com",
+            ".gagile.car.panasonic.com",
+            ".gds.panasonic.com",
+            ".glclm.car.panasonic.com",
+            ".hec.privatecloudedition.com",
+            ".hec.privatecloudedition2.com",
+            ".identity.oraclecloud.com",
+            ".intra.mobitera.cn",
+            ".intra.nplc.co.jp",
+            ".intra.panasonic.cn",
+            ".intra.panasonic.com.hk",
+            ".intra.panasonic.com.sg",
+            ".intra.panasonic.com.tw",
+            ".intra.panasonic.hk",
+            ".is.panasonic.cn",
+            ".jnx.honda.co.jp",
+            ".jp.panasonic.com",
+            ".knowbe4.com",
+            ".live.com",
+            ".mac-j.co.jp",
+            ".mei.co.cn",
+            ".mei.co.jp",
+            ".meil2ks.panasonic.com.hk",
+            ".mew.co.jp",
+            ".mew.com",
+            ".microsoft.com",
+            ".microsoftonline.cn",
+            ".microsoftonline.com",
+            ".miraitranslator.com",
+            ".mmedia.jp",
+            ".msauth.cn",
+            ".msauthimages.cn",
+            ".mscs.com.sg",
+            ".msftauth.cn",
+            ".msftauth.net",
+            ".msftauthimages.cn",
+            ".mufg.jp",
+            ".nais-*.com",
+            ".nikkan.co.jp",
+            ".ocs.oraclecloud.com",
+            ".office.com",
+            ".office365.com",
+            ".onmschina.cn",
+            ".outlook.com",
+            ".panasonic-denko.co.jp",
+            ".panasonic-denkois.co.jp",
+            ".panasonic-electric-works.net",
+            ".papcdl.com",
+            ".partner.lync.cn",
+            ".partner.microsoftonline-i.cn",
+            ".partner.microsoftonline-i.net.cn",
+            ".partner.microsoftonline-m-i.cn",
+            ".partner.microsoftonline-m-i.net.cn",
+            ".partner.microsoftonline-m.cn",
+            ".partner.microsoftonline-m.net.cn",
+            ".partner.microsoftonline-p-i.cn",
+            ".partner.microsoftonline-p-i.net.cn",
+            ".partner.microsoftonline-p.cn",
+            ".partner.microsoftonline-p.net.cn",
+            ".partner.microsoftonline.net.cn",
+            ".partner.office365.cn",
+            ".partner.officewebapps.cn",
+            ".partner.outlook.cn",
+            ".pasafilemgr.car.panasonic.com",
+            ".pewsh.local",
+            ".pwapblgz.panasonic.com",
+            ".pwc.com",
+            ".pwst.cn",
+            ".secsuz.sanyo-cn.com",
+            ".sgwcsvc.jp",
+            ".sharepoint.cn",
+            ".skype.com",
+            ".smew.com.cn",
+            ".sunx.co.jp",
+            ".sunx.com",
+            ".trendmicro.com",
+            ".trendmicro.com.cn",
+            ".wilcom.com.cn",
+            ".windowsazure.cn",
+            ".windowsupdate.com",
+            ".yammer.com",
+            ".zoom.us"
+          ],
+          "domain_regex": [
+            "dx2\\.exnet\\.mitsubishi\\-motors\\.com$",
+            "dx2\\.jnx\\.mitsubishi\\-motors\\.co\\.jp$",
+            "rose\\.exnet\\.mitsubishi\\-motors\\.com$",
+            "rose\\.jnx\\.mitsubishi\\-motors\\.co\\.jp$"
+          ],
+          "invert": true
+        }
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "domain_regex": [
+            "^202\\.244\\..*\\..*$"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "0.0.0.0/0",
+            "::/0"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "202.244.202.0/23"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.254.38.0/23",
+            "10.254.29.0/24",
+            "10.192.160.0/19",
+            "10.195.16.0/24",
+            "10.195.17.0/24",
+            "10.198.60.0/24",
+            "10.254.196.0/22",
+            "10.254.227.0/24",
+            "10.254.228.0/24",
+            "10.254.229.0/24",
+            "10.254.230.0/24",
+            "10.48.26.0/24",
+            "10.195.79.0/24"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.195.65.0/24",
+            "10.195.66.0/24",
+            "10.254.57.0/24",
+            "10.39.4.0/24",
+            "10.48.27.0/24",
+            "10.197.22.0/23",
+            "10.39.25.0/24",
+            "10.194.168.0/22",
+            "10.194.172.0/24",
+            "10.194.184.0/21",
+            "133.184.15.0/24",
+            "10.198.224.0/22",
+            "158.118.75.0/24",
+            "10.192.128.0/19",
+            "10.194.24.0/25",
+            "10.195.39.0/24",
+            "10.195.40.0/24",
+            "10.195.112.0/23",
+            "10.254.30.0/23",
+            "10.194.242.0/24",
+            "10.195.32.0/22",
+            "10.195.37.0/24",
+            "10.195.41.0/24",
+            "10.195.42.0/24",
+            "10.195.43.0/24",
+            "10.195.58.0/24",
+            "10.195.68.0/24",
+            "10.195.81.0/24",
+            "10.195.82.0/24",
+            "10.195.92.0/22",
+            "10.254.36.0/23",
+            "10.48.24.0/24",
+            "10.197.24.0/22",
+            "10.197.28.0/23",
+            "10.197.84.0/22"
+          ],
+          "invert": true
+        },
+        {
+          "domain_suffix": [
+            ".aadrm.com",
+            ".adobe.com",
+            ".adobesign.com",
+            ".akamaiedge.net",
+            ".akamaized.net",
+            ".aliapp.org",
+            ".alibtrip.com",
+            ".alicdn.com",
+            ".aliyun.com",
+            ".amazonaws.com",
+            ".and63da.seac.jp",
+            ".asiainfo-sec.com",
+            ".auth.microsoft.cn",
+            ".aws.amazon.com",
+            ".azure-mobile.cn",
+            ".azure.com",
+            ".box.com",
+            ".box.net",
+            ".boxcdn.net",
+            ".boxcloud.com",
+            ".cdn.office.net",
+            ".chinacloud-mobile.cn",
+            ".chinacloudapi.cn",
+            ".chinacloudapp.cn",
+            ".chinacloudsites.cn",
+            ".cloud.microsoft",
+            ".cloud.panasonicautomotive.com",
+            ".cloudfront.net",
+            ".cn.pewg.panasonic.com",
+            ".cns.sanyo.co.jp",
+            ".corp.tpsemico.com",
+            ".denkogroup.jp",
+            ".dingtalk.cn",
+            ".dingtalk.com",
+            ".dingtalk.net",
+            ".dingtalkapps.com",
+            ".echocdn.com",
+            ".echosign.com",
+            ".edi.niandc.ne.jp",
+            ".eds.panasonic.com",
+            ".gagile.car.panasonic.com",
+            ".gds.panasonic.com",
+            ".glclm.car.panasonic.com",
+            ".hec.privatecloudedition.com",
+            ".hec.privatecloudedition2.com",
+            ".identity.oraclecloud.com",
+            ".intra.mobitera.cn",
+            ".intra.nplc.co.jp",
+            ".intra.panasonic.cn",
+            ".intra.panasonic.com.hk",
+            ".intra.panasonic.com.sg",
+            ".intra.panasonic.com.tw",
+            ".intra.panasonic.hk",
+            ".is.panasonic.cn",
+            ".jnx.honda.co.jp",
+            ".jp.panasonic.com",
+            ".knowbe4.com",
+            ".live.com",
+            ".mac-j.co.jp",
+            ".mei.co.cn",
+            ".mei.co.jp",
+            ".meil2ks.panasonic.com.hk",
+            ".mew.co.jp",
+            ".mew.com",
+            ".microsoft.com",
+            ".microsoftonline.cn",
+            ".microsoftonline.com",
+            ".miraitranslator.com",
+            ".mmedia.jp",
+            ".msauth.cn",
+            ".msauthimages.cn",
+            ".mscs.com.sg",
+            ".msftauth.cn",
+            ".msftauth.net",
+            ".msftauthimages.cn",
+            ".mufg.jp",
+            ".nais-*.com",
+            ".nikkan.co.jp",
+            ".ocs.oraclecloud.com",
+            ".office.com",
+            ".office365.com",
+            ".onmschina.cn",
+            ".outlook.com",
+            ".panasonic-denko.co.jp",
+            ".panasonic-denkois.co.jp",
+            ".panasonic-electric-works.net",
+            ".papcdl.com",
+            ".partner.lync.cn",
+            ".partner.microsoftonline-i.cn",
+            ".partner.microsoftonline-i.net.cn",
+            ".partner.microsoftonline-m-i.cn",
+            ".partner.microsoftonline-m-i.net.cn",
+            ".partner.microsoftonline-m.cn",
+            ".partner.microsoftonline-m.net.cn",
+            ".partner.microsoftonline-p-i.cn",
+            ".partner.microsoftonline-p-i.net.cn",
+            ".partner.microsoftonline-p.cn",
+            ".partner.microsoftonline-p.net.cn",
+            ".partner.microsoftonline.net.cn",
+            ".partner.office365.cn",
+            ".partner.officewebapps.cn",
+            ".partner.outlook.cn",
+            ".pasafilemgr.car.panasonic.com",
+            ".pewsh.local",
+            ".pwapblgz.panasonic.com",
+            ".pwc.com",
+            ".pwst.cn",
+            ".secsuz.sanyo-cn.com",
+            ".sgwcsvc.jp",
+            ".sharepoint.cn",
+            ".skype.com",
+            ".smew.com.cn",
+            ".sunx.co.jp",
+            ".sunx.com",
+            ".trendmicro.com",
+            ".trendmicro.com.cn",
+            ".wilcom.com.cn",
+            ".windowsazure.cn",
+            ".windowsupdate.com",
+            ".yammer.com",
+            ".zoom.us"
+          ],
+          "domain_regex": [
+            "dx2\\.exnet\\.mitsubishi\\-motors\\.com$",
+            "dx2\\.jnx\\.mitsubishi\\-motors\\.co\\.jp$",
+            "rose\\.exnet\\.mitsubishi\\-motors\\.com$",
+            "rose\\.jnx\\.mitsubishi\\-motors\\.co\\.jp$"
+          ],
+          "invert": true
+        }
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "domain_regex": [
+            "sanyo\\.co\\.jp$"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "0.0.0.0/0",
+            "::/0"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "192.168.0.0/16",
+            "127.0.0.1/32"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.254.38.0/23",
+            "10.254.29.0/24",
+            "10.192.160.0/19",
+            "10.195.16.0/24",
+            "10.195.17.0/24",
+            "10.198.60.0/24",
+            "10.254.196.0/22",
+            "10.254.227.0/24",
+            "10.254.228.0/24",
+            "10.254.229.0/24",
+            "10.254.230.0/24",
+            "10.48.26.0/24",
+            "10.195.79.0/24"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.195.65.0/24",
+            "10.195.66.0/24",
+            "10.254.57.0/24",
+            "10.39.4.0/24",
+            "10.48.27.0/24",
+            "10.197.22.0/23",
+            "10.39.25.0/24",
+            "10.194.168.0/22",
+            "10.194.172.0/24",
+            "10.194.184.0/21",
+            "133.184.15.0/24",
+            "10.198.224.0/22",
+            "158.118.75.0/24",
+            "10.192.128.0/19",
+            "10.194.24.0/25",
+            "10.195.39.0/24",
+            "10.195.40.0/24",
+            "10.195.112.0/23",
+            "10.254.30.0/23",
+            "10.194.242.0/24",
+            "10.195.32.0/22",
+            "10.195.37.0/24",
+            "10.195.41.0/24",
+            "10.195.42.0/24",
+            "10.195.43.0/24",
+            "10.195.58.0/24",
+            "10.195.68.0/24",
+            "10.195.81.0/24",
+            "10.195.82.0/24",
+            "10.195.92.0/22",
+            "10.254.36.0/23",
+            "10.48.24.0/24",
+            "10.197.24.0/22",
+            "10.197.28.0/23",
+            "10.197.84.0/22"
+          ],
+          "invert": true
+        },
+        {
+          "domain_suffix": [
+            ".cns.sanyo.co.jp"
+          ],
+          "domain_regex": [
+            "^10\\..*\\..*\\..*$",
+            "^132\\.182\\..*\\..*$",
+            "^133\\.181\\..*\\..*$",
+            "^133\\.182\\..*\\..*$",
+            "^133\\.183\\..*\\..*$",
+            "^133\\.184\\..*\\..*$",
+            "^133\\.185\\..*\\..*$",
+            "^133\\.254\\..*\\..*$",
+            "^137\\.40\\..*\\..*$",
+            "^157\\.8\\..*\\..*$",
+            "^158\\.118\\..*\\..*$",
+            "^172\\..*\\..*\\..*$",
+            "^192\\.168\\..*\\..*$",
+            "^202\\.244\\..*\\..*$"
+          ],
+          "invert": true
+        }
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "domain_regex": [
+            "sanyo\\.com$"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "0.0.0.0/0",
+            "::/0"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "192.168.0.0/16",
+            "127.0.0.1/32"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.254.38.0/23",
+            "10.254.29.0/24",
+            "10.192.160.0/19",
+            "10.195.16.0/24",
+            "10.195.17.0/24",
+            "10.198.60.0/24",
+            "10.254.196.0/22",
+            "10.254.227.0/24",
+            "10.254.228.0/24",
+            "10.254.229.0/24",
+            "10.254.230.0/24",
+            "10.48.26.0/24",
+            "10.195.79.0/24"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.195.65.0/24",
+            "10.195.66.0/24",
+            "10.254.57.0/24",
+            "10.39.4.0/24",
+            "10.48.27.0/24",
+            "10.197.22.0/23",
+            "10.39.25.0/24",
+            "10.194.168.0/22",
+            "10.194.172.0/24",
+            "10.194.184.0/21",
+            "133.184.15.0/24",
+            "10.198.224.0/22",
+            "158.118.75.0/24",
+            "10.192.128.0/19",
+            "10.194.24.0/25",
+            "10.195.39.0/24",
+            "10.195.40.0/24",
+            "10.195.112.0/23",
+            "10.254.30.0/23",
+            "10.194.242.0/24",
+            "10.195.32.0/22",
+            "10.195.37.0/24",
+            "10.195.41.0/24",
+            "10.195.42.0/24",
+            "10.195.43.0/24",
+            "10.195.58.0/24",
+            "10.195.68.0/24",
+            "10.195.81.0/24",
+            "10.195.82.0/24",
+            "10.195.92.0/22",
+            "10.254.36.0/23",
+            "10.48.24.0/24",
+            "10.197.24.0/22",
+            "10.197.28.0/23",
+            "10.197.84.0/22"
+          ],
+          "invert": true
+        },
+        {
+          "domain_regex": [
+            "^10\\..*\\..*\\..*$",
+            "^132\\.182\\..*\\..*$",
+            "^133\\.181\\..*\\..*$",
+            "^133\\.182\\..*\\..*$",
+            "^133\\.183\\..*\\..*$",
+            "^133\\.184\\..*\\..*$",
+            "^133\\.185\\..*\\..*$",
+            "^133\\.254\\..*\\..*$",
+            "^137\\.40\\..*\\..*$",
+            "^157\\.8\\..*\\..*$",
+            "^158\\.118\\..*\\..*$",
+            "^172\\..*\\..*\\..*$",
+            "^192\\.168\\..*\\..*$",
+            "^202\\.244\\..*\\..*$"
+          ],
+          "invert": true
+        }
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "domain_suffix": [
+            ".panasonic.cn"
+          ]
+        },
+        {
+          "type": "logical",
+          "mode": "or",
+          "rules": [
+            {
+              "source_ip_cidr": [
+                "10.192.64.0/18"
+              ]
+            },
+            {
+              "type": "logical",
+              "mode": "and",
+              "rules": [
+                {
+                  "source_ip_cidr": [
+                    "10.254.38.0/23",
+                    "10.254.29.0/24",
+                    "10.192.160.0/19",
+                    "10.195.16.0/24",
+                    "10.195.17.0/24",
+                    "10.198.60.0/24",
+                    "10.254.196.0/22",
+                    "10.254.227.0/24",
+                    "10.254.228.0/24",
+                    "10.254.229.0/24",
+                    "10.254.230.0/24",
+                    "10.48.26.0/24",
+                    "10.195.79.0/24"
+                  ],
+                  "invert": true
+                },
+                {
+                  "source_ip_cidr": [
+                    "10.195.65.0/24",
+                    "10.195.66.0/24",
+                    "10.254.57.0/24",
+                    "10.39.4.0/24",
+                    "10.48.27.0/24",
+                    "10.197.22.0/23",
+                    "10.39.25.0/24",
+                    "10.194.168.0/22",
+                    "10.194.172.0/24",
+                    "10.194.184.0/21",
+                    "133.184.15.0/24",
+                    "10.198.224.0/22",
+                    "158.118.75.0/24",
+                    "10.192.128.0/19",
+                    "10.194.24.0/25",
+                    "10.195.39.0/24",
+                    "10.195.40.0/24",
+                    "10.195.112.0/23",
+                    "10.254.30.0/23",
+                    "10.194.242.0/24",
+                    "10.195.32.0/22",
+                    "10.195.37.0/24",
+                    "10.195.41.0/24",
+                    "10.195.42.0/24",
+                    "10.195.43.0/24",
+                    "10.195.58.0/24",
+                    "10.195.68.0/24",
+                    "10.195.81.0/24",
+                    "10.195.82.0/24",
+                    "10.195.92.0/22",
+                    "10.254.36.0/23",
+                    "10.48.24.0/24",
+                    "10.197.24.0/22",
+                    "10.197.28.0/23",
+                    "10.197.84.0/22"
+                  ],
+                  "invert": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "domain": [
+            "any3.panasonic.cn",
+            "cloud-mobile.panasonic.cn",
+            "cloud-pc.panasonic.cn",
+            "cloud-proxy.panasonic.cn",
+            "fcems.panasonic.cn"
+          ],
+          "domain_suffix": [
+            ".intra.panasonic.cn",
+            ".is.panasonic.cn"
+          ],
+          "domain_regex": [
+            "^10\\..*\\..*\\..*$",
+            "^132\\.182\\..*\\..*$",
+            "^133\\.181\\..*\\..*$",
+            "^133\\.182\\..*\\..*$",
+            "^133\\.183\\..*\\..*$",
+            "^133\\.184\\..*\\..*$",
+            "^133\\.185\\..*\\..*$",
+            "^133\\.254\\..*\\..*$",
+            "^137\\.40\\..*\\..*$",
+            "^157\\.8\\..*\\..*$",
+            "^158\\.118\\..*\\..*$",
+            "^172\\..*\\..*\\..*$",
+            "^192\\.168\\..*\\..*$",
+            "^202\\.244\\..*\\..*$"
+          ],
+          "invert": true
+        }
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "ip_cidr": [
+            "172.0.0.0/8"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "0.0.0.0/0",
+            "::/0"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "172.16.0.0/12"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.254.38.0/23",
+            "10.254.29.0/24",
+            "10.192.160.0/19",
+            "10.195.16.0/24",
+            "10.195.17.0/24",
+            "10.198.60.0/24",
+            "10.254.196.0/22",
+            "10.254.227.0/24",
+            "10.254.228.0/24",
+            "10.254.229.0/24",
+            "10.254.230.0/24",
+            "10.48.26.0/24",
+            "10.195.79.0/24"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.195.65.0/24",
+            "10.195.66.0/24",
+            "10.254.57.0/24",
+            "10.39.4.0/24",
+            "10.48.27.0/24",
+            "10.197.22.0/23",
+            "10.39.25.0/24",
+            "10.194.168.0/22",
+            "10.194.172.0/24",
+            "10.194.184.0/21",
+            "133.184.15.0/24",
+            "10.198.224.0/22",
+            "158.118.75.0/24",
+            "10.192.128.0/19",
+            "10.194.24.0/25",
+            "10.195.39.0/24",
+            "10.195.40.0/24",
+            "10.195.112.0/23",
+            "10.254.30.0/23",
+            "10.194.242.0/24",
+            "10.195.32.0/22",
+            "10.195.37.0/24",
+            "10.195.41.0/24",
+            "10.195.42.0/24",
+            "10.195.43.0/24",
+            "10.195.58.0/24",
+            "10.195.68.0/24",
+            "10.195.81.0/24",
+            "10.195.82.0/24",
+            "10.195.92.0/22",
+            "10.254.36.0/23",
+            "10.48.24.0/24",
+            "10.197.24.0/22",
+            "10.197.28.0/23",
+            "10.197.84.0/22"
+          ],
+          "invert": true
+        },
+        {
+          "domain_regex": [
+            ".+"
+          ],
+          "invert": true
+        },
+        {
+          "ip_cidr": [
+            "10.0.0.0/8",
+            "127.0.0.1/32",
+            "132.182.0.0/16",
+            "133.181.0.0/16",
+            "133.182.0.0/16",
+            "133.184.0.0/15",
+            "133.254.0.0/16",
+            "137.40.0.0/16",
+            "157.8.0.0/16",
+            "158.118.0.0/16",
+            "172.18.0.0/15",
+            "172.25.16.0/24",
+            "172.26.0.0/15",
+            "192.168.0.0/16",
+            "210.76.97.54/32",
+            "221.224.90.165/32"
+          ],
+          "invert": true
+        }
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "ip_cidr": [
+            "133.183.0.0/16"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "133.183.96.0/19",
+            "133.183.128.0/20"
+          ]
+        },
+        {
+          "source_ip_cidr": [
+            "10.254.38.0/23",
+            "10.254.29.0/24",
+            "10.192.160.0/19",
+            "10.195.16.0/24",
+            "10.195.17.0/24",
+            "10.198.60.0/24",
+            "10.254.196.0/22",
+            "10.254.227.0/24",
+            "10.254.228.0/24",
+            "10.254.229.0/24",
+            "10.254.230.0/24",
+            "10.48.26.0/24",
+            "10.195.79.0/24"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.195.65.0/24",
+            "10.195.66.0/24",
+            "10.254.57.0/24",
+            "10.39.4.0/24",
+            "10.48.27.0/24",
+            "10.197.22.0/23",
+            "10.39.25.0/24",
+            "10.194.168.0/22",
+            "10.194.172.0/24",
+            "10.194.184.0/21",
+            "133.184.15.0/24",
+            "10.198.224.0/22",
+            "158.118.75.0/24",
+            "10.192.128.0/19",
+            "10.194.24.0/25",
+            "10.195.39.0/24",
+            "10.195.40.0/24",
+            "10.195.112.0/23",
+            "10.254.30.0/23",
+            "10.194.242.0/24",
+            "10.195.32.0/22",
+            "10.195.37.0/24",
+            "10.195.41.0/24",
+            "10.195.42.0/24",
+            "10.195.43.0/24",
+            "10.195.58.0/24",
+            "10.195.68.0/24",
+            "10.195.81.0/24",
+            "10.195.82.0/24",
+            "10.195.92.0/22",
+            "10.254.36.0/23",
+            "10.48.24.0/24",
+            "10.197.24.0/22",
+            "10.197.28.0/23",
+            "10.197.84.0/22"
+          ],
+          "invert": true
+        },
+        {
+          "domain_regex": [
+            ".+"
+          ],
+          "invert": true
+        },
+        {
+          "ip_cidr": [
+            "10.0.0.0/8",
+            "127.0.0.1/32",
+            "132.182.0.0/16",
+            "133.181.0.0/16",
+            "133.182.0.0/16",
+            "133.184.0.0/15",
+            "133.254.0.0/16",
+            "137.40.0.0/16",
+            "157.8.0.0/16",
+            "158.118.0.0/16",
+            "172.0.0.0/8",
+            "192.168.0.0/16",
+            "210.76.97.54/32",
+            "221.224.90.165/32"
+          ],
+          "invert": true
+        }
+      ]
+    },
+    {
+      "type": "logical",
+      "mode": "and",
+      "rules": [
+        {
+          "ip_cidr": [
+            "202.244.0.0/16"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "0.0.0.0/0",
+            "::/0"
+          ]
+        },
+        {
+          "ip_cidr": [
+            "202.244.202.0/23"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.254.38.0/23",
+            "10.254.29.0/24",
+            "10.192.160.0/19",
+            "10.195.16.0/24",
+            "10.195.17.0/24",
+            "10.198.60.0/24",
+            "10.254.196.0/22",
+            "10.254.227.0/24",
+            "10.254.228.0/24",
+            "10.254.229.0/24",
+            "10.254.230.0/24",
+            "10.48.26.0/24",
+            "10.195.79.0/24"
+          ],
+          "invert": true
+        },
+        {
+          "source_ip_cidr": [
+            "10.195.65.0/24",
+            "10.195.66.0/24",
+            "10.254.57.0/24",
+            "10.39.4.0/24",
+            "10.48.27.0/24",
+            "10.197.22.0/23",
+            "10.39.25.0/24",
+            "10.194.168.0/22",
+            "10.194.172.0/24",
+            "10.194.184.0/21",
+            "133.184.15.0/24",
+            "10.198.224.0/22",
+            "158.118.75.0/24",
+            "10.192.128.0/19",
+            "10.194.24.0/25",
+            "10.195.39.0/24",
+            "10.195.40.0/24",
+            "10.195.112.0/23",
+            "10.254.30.0/23",
+            "10.194.242.0/24",
+            "10.195.32.0/22",
+            "10.195.37.0/24",
+            "10.195.41.0/24",
+            "10.195.42.0/24",
+            "10.195.43.0/24",
+            "10.195.58.0/24",
+            "10.195.68.0/24",
+            "10.195.81.0/24",
+            "10.195.82.0/24",
+            "10.195.92.0/22",
+            "10.254.36.0/23",
+            "10.48.24.0/24",
+            "10.197.24.0/22",
+            "10.197.28.0/23",
+            "10.197.84.0/22"
+          ],
+          "invert": true
+        },
+        {
+          "domain_regex": [
+            ".+"
+          ],
+          "invert": true
+        },
+        {
+          "ip_cidr": [
+            "10.0.0.0/8",
+            "127.0.0.1/32",
+            "132.182.0.0/16",
+            "133.181.0.0/16",
+            "133.182.0.0/15",
+            "133.184.0.0/15",
+            "133.254.0.0/16",
+            "137.40.0.0/16",
+            "157.8.0.0/16",
+            "158.118.0.0/16",
+            "172.0.0.0/8",
+            "192.168.0.0/16",
+            "210.76.97.54/32",
+            "221.224.90.165/32"
+          ],
+          "invert": true
+        }
+      ]
+    }
+  ]
+}
